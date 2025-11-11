@@ -15,20 +15,6 @@ public class home extends ComponentActivity {
         setContentView(R.layout.activity_home);
 
         BuddyWatchApp app = (BuddyWatchApp) getApplication();
-        TutViewModel tutView = app.getTutViewModel();
-
-        tutView.getFilePath().observe(this, tutorial -> {
-            if (tutorial != null){
-                Log.d("WearApp", "New tut!");
-
-                Intent intent = new Intent(this, tutorialHandler.class);
-                intent.putExtra("TUTORIAL_PATH", tutorial);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-                startActivity(intent);
-
-            }
-        });
 
     }
 

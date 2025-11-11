@@ -39,10 +39,16 @@ public class tutorialHandler extends Activity {
                 textView.setText(out);
             }
 
-            textView.setOnClickListener(v -> {
+            findViewById(R.id.root).setOnClickListener(v -> {
                 curLine++;
                 if (curLine >= lines.length){
-                    curLine = 0;
+                    String out = "The Tutorial is over.";
+                    try {
+                        wait(500);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    finish();
                 }
                 String out = "Step " + (curLine + 1) + ". " + lines[curLine];
                 textView.setText(out);

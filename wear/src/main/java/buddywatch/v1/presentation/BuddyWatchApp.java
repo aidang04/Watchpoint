@@ -14,8 +14,4 @@ public class BuddyWatchApp extends Application implements ViewModelStoreOwner {
         return modelStore;
     }
 
-    public TutViewModel getTutViewModel(){
-        return new ViewModelProvider(this).get(TutViewModel.class);
-    }
-
 }
