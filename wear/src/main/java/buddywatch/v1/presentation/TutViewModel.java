@@ -2,8 +2,9 @@ package buddywatch.v1.presentation;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
-public class TutViewModel {
+public class TutViewModel extends ViewModel {
 
     private final MutableLiveData<String> tut = new MutableLiveData<>();
 
