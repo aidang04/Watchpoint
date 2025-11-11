@@ -43,12 +43,9 @@ public class tutorialHandler extends Activity {
                 curLine++;
                 if (curLine >= lines.length){
                     String out = "The Tutorial is over.";
-                    try {
-                        wait(500);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                    finish();
+                    textView.setText(out);
+                    v.postDelayed(this::finish, 1000);
+                    return;
                 }
                 String out = "Step " + (curLine + 1) + ". " + lines[curLine];
                 textView.setText(out);
