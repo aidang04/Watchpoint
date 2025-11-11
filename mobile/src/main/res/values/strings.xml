@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Buddywatch</string>
+    <string name="send_tutorial">Send Tutorial!</string>
 </resources>
