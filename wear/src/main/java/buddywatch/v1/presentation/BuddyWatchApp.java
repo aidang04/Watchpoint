@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStore;
 import androidx.lifecycle.ViewModelStoreOwner;
 
-public class buddyWatchApp extends Application implements ViewModelStoreOwner {
+public class BuddyWatchApp extends Application implements ViewModelStoreOwner {
     private final ViewModelStore modelStore = new ViewModelStore();
 
     @Override

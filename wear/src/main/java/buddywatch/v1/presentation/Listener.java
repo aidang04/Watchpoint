@@ -18,7 +18,7 @@ public class Listener extends WearableListenerService {
             String in = new String(msgEvent.getData(), StandardCharsets.UTF_8);
             Log.d("Wear", "Tut received! " + in);
 
-            buddyWatchApp app = (buddyWatchApp) getApplication();
+            BuddyWatchApp app = (BuddyWatchApp) getApplication();
             TutViewModel tutView = app.getTutViewModel();
             tutView.setFilePath(in);
 
