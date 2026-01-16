@@ -2,8 +2,22 @@ package buddywatch.v1.presentation;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.health.services.client.HealthServicesClient;
+import androidx.health.services.client.HealthServices;
+import androidx.health.services.client.MeasureCallback;
+import androidx.health.services.client.MeasureClient;
+import androidx.health.services.client.data.Availability;
+import androidx.health.services.client.data.DataType;
+import androidx.health.services.client.data.DataPointContainer;
+import androidx.health.services.client.data.DeltaDataType;
+import androidx.health.services.client.data.SampleDataPoint;
+
+
+import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,8 +27,13 @@ import buddywatch.v1.R;
 
 public class tutorialHandler extends Activity {
 
+    MeasureCallback  callback;
+    MeasureClient mClient;
     int curLine;
     private TextView textView;
+
+    double curbpm;
+    ArrayList<Double> bpms = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstance){
@@ -28,6 +47,9 @@ public class tutorialHandler extends Activity {
     }
 
     public void startTut(String filename){
+
+        // Call trackHeartrate method to begin tracking the heartrate of the user.
+        trackHeartrate();
 
         String[] lines;
         try{
@@ -44,6 +66,10 @@ public class tutorialHandler extends Activity {
                 if (curLine >= lines.length){
                     String out = "The Tutorial is over.";
                     textView.setText(out);
+
+                    // Stop tracking the user's heartrate.
+                    stopTracking();
+
                     v.postDelayed(this::finish, 1000);
                     return;
                 }
@@ -57,6 +83,40 @@ public class tutorialHandler extends Activity {
         }
     }
 
+    public void trackHeartrate(){
+
+        HealthServicesClient hClient = HealthServices.getClient(this);
+        mClient = hClient.getMeasureClient();
+
+        callback = new MeasureCallback() {
+            @Override
+            public void onAvailabilityChanged(@NonNull DeltaDataType<?, ?> deltaDataType, @NonNull Availability availability) {
+                Log.d("tutorialHandler", "The availability has changed.");
+            }
+
+            @Override
+            public void onDataReceived(DataPointContainer dataPointContainer) {
+
+                for(SampleDataPoint<Double> dp : dataPointContainer.getData(DataType.HEART_RATE_BPM)){
+                    curbpm = dp.getValue();
+                    bpms.add(curbpm);
+
+                    // TODO: runOnUiThread(() -> );
+
+                }
+
+            }
+        };
+
+        mClient.registerMeasureCallback(DataType.HEART_RATE_BPM, callback);
+
+    }
+
+    public void stopTracking(){
+        if(mClient != null && callback != null){
+             mClient.unregisterMeasureCallbackAsync(DataType.HEART_RATE_BPM, callback);
+        }
+    }
 
     // Breaks down the file into displayable lines for startTut.
     public String[] readFile(String filename) throws IOException {
