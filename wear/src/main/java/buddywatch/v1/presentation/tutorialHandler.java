@@ -1,6 +1,8 @@
 package buddywatch.v1.presentation;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
@@ -16,7 +18,6 @@ import androidx.health.services.client.data.DataPointContainer;
 import androidx.health.services.client.data.DeltaDataType;
 import androidx.health.services.client.data.SampleDataPoint;
 
-
 import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -31,6 +32,7 @@ public class tutorialHandler extends Activity {
     MeasureClient mClient;
     int curLine;
     private TextView textView;
+    private TextView bpmView;
 
     double curbpm;
     ArrayList<Double> bpms = new ArrayList<>();
@@ -39,17 +41,32 @@ public class tutorialHandler extends Activity {
     protected void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
 
+        // populates guide view
         setContentView(R.layout.activity_tutorial);
-        textView = findViewById(R.id.textView);
+        textView = findViewById(R.id.textView);     // guide text display
+        bpmView = findViewById(R.id.bpmView);       // heartrate display
 
+        // passed in string from mobile app, points to guide
         String tutorial = getIntent().getStringExtra("TUTORIAL_PATH");
-        startTut(tutorial);
+        checkPerms(tutorial);
+    }
+
+    public void checkPerms(String filename){
+
+        if (checkSelfPermission(android.Manifest.permission.BODY_SENSORS)
+                == PackageManager.PERMISSION_GRANTED) {
+            trackHeartrate();
+
+            startTut(filename);
+        }
+        else
+        {
+            requestPermissions(new String[]{Manifest.permission.BODY_SENSORS}, 1001);
+        }
+
     }
 
     public void startTut(String filename){
-
-        // Call trackHeartrate method to begin tracking the heartrate of the user.
-        trackHeartrate();
 
         String[] lines;
         try{
@@ -67,10 +84,9 @@ public class tutorialHandler extends Activity {
                     String out = "The Tutorial is over.";
                     textView.setText(out);
 
-                    // Stop tracking the user's heartrate.
-                    stopTracking();
 
                     v.postDelayed(this::finish, 1000);
+                    stopTracking();
                     return;
                 }
                 String out = "Step " + (curLine + 1) + ". " + lines[curLine];
@@ -80,6 +96,35 @@ public class tutorialHandler extends Activity {
         }
         catch(IOException e){
             textView.setText("Error reading file.");
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(
+            int requestCode,
+            @NonNull String[] permissions,
+            @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        Log.d("reqPerm", "line 111");
+
+        if (requestCode == 1001){
+            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                Log.d("reqPerm", "line 116");
+
+                trackHeartrate();
+
+                Log.d("reqPerm", "line 120");
+
+                String filename = getIntent().getStringExtra("TUTORIAL_PATH");
+                startTut(filename);
+            }
+            else if(grantResults[0] == PackageManager.PERMISSION_DENIED){
+                Log.d("reqPerm", "line 126");
+            }
+        }
+        else{
+            Log.d("reqPerm", "line 130");
         }
     }
 
@@ -97,11 +142,13 @@ public class tutorialHandler extends Activity {
             @Override
             public void onDataReceived(DataPointContainer dataPointContainer) {
 
+                Log.d("HR_DATA", "Received HR data");
+
                 for(SampleDataPoint<Double> dp : dataPointContainer.getData(DataType.HEART_RATE_BPM)){
                     curbpm = dp.getValue();
                     bpms.add(curbpm);
 
-                    // TODO: runOnUiThread(() -> );
+                    runOnUiThread(() -> bpmView.setText(Double.toString(curbpm) + " bpm"));
 
                 }
 

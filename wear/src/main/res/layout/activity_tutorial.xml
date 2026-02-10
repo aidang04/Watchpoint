@@ -7,7 +7,7 @@
     android:id="@+id/root">
 
     <!-- Rounded rectangle background -->
-    <LinearLayout
+    <FrameLayout
         android:layout_width="175dp"
         android:layout_height="150dp"
         android:layout_gravity="center"
@@ -25,7 +25,17 @@
             android:textColor="@android:color/black"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:gravity="center"/>
-    </LinearLayout>
+            android:layout_gravity="center"/>
+        
+        <TextView
+            android:id="@+id/bpmView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|top"
+            android:text="@string/loadBPM"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="12sp"
+            />
+    </FrameLayout>
 
 </FrameLayout>

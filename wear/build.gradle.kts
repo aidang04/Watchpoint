@@ -42,7 +42,7 @@ dependencies {
     implementation(libs.androidx.wear)
     implementation(libs.androidx.health.services.client.v110alpha05)
     implementation(libs.play.services.wearable)
-    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.guava)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)

@@ -7,4 +7,5 @@
     <string name="hello_world">From the Square world,\nHello, %1$s!</string>
     <string name ="welcome">Welcome to the app! \nTutorials will appear here when sent from the partner app!</string>
     <string name="loading">Now Loading…</string>
+    <string name ="loadBPM">-- bpm</string>
 </resources>
