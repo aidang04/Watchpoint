@@ -106,21 +106,17 @@ public class tutorialHandler extends Activity {
             @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        Log.d("reqPerm", "line 111");
-
         if (requestCode == 1001){
             if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                Log.d("reqPerm", "line 116");
 
                 trackHeartrate();
 
-                Log.d("reqPerm", "line 120");
-
-                String filename = getIntent().getStringExtra("TUTORIAL_PATH");
-                startTut(filename);
+                startTut(getIntent().getStringExtra("TUTORIAL_PATH"));
             }
             else if(grantResults[0] == PackageManager.PERMISSION_DENIED){
-                Log.d("reqPerm", "line 126");
+
+                startTut(getIntent().getStringExtra("TUTORIAL_PATH"));
+
             }
         }
         else{
