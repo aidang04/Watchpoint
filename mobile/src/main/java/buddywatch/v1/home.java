@@ -1,13 +1,21 @@
 package buddywatch.v1;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.room.Room;
 
 import com.google.android.gms.wearable.Node;
@@ -45,13 +53,24 @@ public class home extends AppCompatActivity {
         // Creates data access object to interact with Guide table.
         GuideDAO gDAO = db.gdao();
 
+        Thread dbCheckDatabase = new Thread(() -> {
+            if(gDAO.countGuides() == 0){
+                fillDatabase(gDAO);
+            }
+        });
+
         // Prepares atomic reference object.
-        AtomicReference<List<Guide>> guides = new AtomicReference<>(new ArrayList<>());
+        AtomicReference<List<Guide>> aGuides = new AtomicReference<>(new ArrayList<>());
 
         // Uses atomic object to store all guides.
-        Thread dbGetAllGuides = new Thread(() -> guides.set(gDAO.getAllGuides()));
+        Thread dbGetAllGuides = new Thread(() -> aGuides.set(gDAO.getAllGuides()));
 
         try{
+            // Checks if database is empty, if so, fills with guides.
+            dbCheckDatabase.start();
+            dbCheckDatabase.join();
+
+            // Returns a list of all guides.
             dbGetAllGuides.start();
             dbGetAllGuides.join();
         } catch (InterruptedException e) {
@@ -60,26 +79,21 @@ public class home extends AppCompatActivity {
         }
 
         // Passes atomic object into actual object for use.
-        List<Guide> guidez = guides.get();
+        List<Guide> guides = aGuides.get();
 
         LinearLayout guideContainer = findViewById(R.id.guides);
 
         // Loops through all guides and adds them to the UI.
-        for(int i = 0; i < guidez.size(); i++) {
-            Guide guide = guidez.get(i);
+        for(int i = 0; i < guides.size(); i++) {
+            Guide guide = guides.get(i);
 
-            Button button = new Button(this);
-            button.setText(guide.guideName);
-            button.setId(guide.id);
-            button.setOnClickListener(v -> viewGuide(button, db));
-
-            guideContainer.addView(button);
+            createDailyBox(db, guideContainer, guide.id, guide.guideName, false);
 
         }
 
     }
 
-    private void viewGuide(Button info, GuideDatabase db){
+    private void viewGuide(int id, String name, GuideDatabase db){
 
         setContentView(R.layout.guideview);
         Button start = findViewById(R.id.send);
@@ -92,7 +106,7 @@ public class home extends AppCompatActivity {
 
         GuideDAO gDAO = db.gdao();
 
-        Thread dbGetGuide = new Thread(() -> results.set(gDAO.getGuideById(info.getId())));
+        Thread dbGetGuide = new Thread(() -> results.set(gDAO.getGuideById(id)));
 
         try{
             dbGetGuide.start();
@@ -106,7 +120,7 @@ public class home extends AppCompatActivity {
 
         // Runs UI updates to customise guide screen to selected guide.
         runOnUiThread(() -> {
-            title.setText(info.getText());
+            title.setText(name);
 
             if(current.markedDaily){
                 toggleDaily(daily);
@@ -121,7 +135,7 @@ public class home extends AppCompatActivity {
         start.setOnClickListener(v -> {
 
             AtomicReference<String> filepath = new AtomicReference<>();
-            Thread dbGetFilepath = new Thread(() -> filepath.set(gDAO.getGuideFilepathById(info.getId())));
+            Thread dbGetFilepath = new Thread(() -> filepath.set(gDAO.getGuideFilepathById(id)));
 
             try{
                 dbGetFilepath.start();
@@ -140,12 +154,12 @@ public class home extends AppCompatActivity {
         // Sets listeners to allow user to toggle options on each guide.
         favourite.setOnClickListener(v -> {
             toggleFav(favourite);
-            Thread dbToggleFav = new Thread(() -> gDAO.toggleFav(info.getId()));
+            Thread dbToggleFav = new Thread(() -> gDAO.toggleFav(id));
             dbToggleFav.start();
         });
         daily.setOnClickListener(v -> {
             toggleDaily(daily);
-            Thread dbToggleDaily = new Thread(() -> gDAO.toggleDaily(info.getId()));
+            Thread dbToggleDaily = new Thread(() -> gDAO.toggleDaily(id));
             dbToggleDaily.start();
         });
 
@@ -177,6 +191,66 @@ public class home extends AppCompatActivity {
             toUpdate.setTag("true");
             toUpdate.setImageResource(R.drawable.save);
         }
+    }
+
+    private void fillDatabase(GuideDAO gDAO){
+
+        List<Guide> guides = new ArrayList<>();
+        guides.add(new Guide("Test 1","tut1.txt"));
+        guides.add(new Guide("Test 2","tut2.txt"));
+        guides.add(new Guide("Test 3","tut3.txt"));
+        guides.add(new Guide("Test 4","tut4.txt"));
+
+        Thread dbPopulate = new Thread(() -> gDAO.insertAll(guides));
+
+        try{
+            dbPopulate.start();
+            dbPopulate.join();
+        }
+        catch (InterruptedException e){
+            // TODO : Handle Gracefully
+            throw new RuntimeException();
+        }
+
+    }
+
+    private void createDailyBox(GuideDatabase db, LinearLayout addTo, int id, String title, boolean completed){
+
+        Context context = addTo.getContext();
+        DisplayMetrics disp = context.getResources().getDisplayMetrics();
+
+        CardView card = new CardView(context);
+        LinearLayout.LayoutParams cardP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        int margin = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, disp));
+        int padding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 13, disp));
+
+        cardP.setMargins(0,0,0,margin);
+        card.setLayoutParams(cardP);
+        card.setRadius(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, disp));
+
+        TextView textView = new TextView(context);
+        textView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+        textView.setText(title);
+        textView.setTextAlignment(ViewGroup.TEXT_ALIGNMENT_CENTER);
+        textView.setPadding(0, padding, 0, padding);
+
+        CheckBox check = new CheckBox(context);
+        FrameLayout.LayoutParams checkP = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        checkP.gravity = Gravity.END;
+        check.setLayoutParams(checkP);
+        check.setChecked(completed);
+
+        card.addView(textView);
+        card.addView(check);
+
+        card.setOnClickListener(v -> {
+            viewGuide(id, title, db);
+        });
+
+        addTo.addView(card);
+
     }
 
     private void sendCommand(String tut) {

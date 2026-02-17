@@ -6,6 +6,8 @@
     Displayed Strings
     <string name="send_tutorial">Start Guide on Watch</string>
     <string name="welcome">Welcome to Watchpoint.</string>
+    <string name="allGuides">View All Guides.</string>
+    <string name="heartRate">View Health Info.</string>
 
     Placeholder Text
     <string name="loading">Loading…</string>
@@ -14,5 +16,8 @@
     <string name="unfilledFav">Unfilled Favourite Icon</string>
     <string name="unfilledDaily">Unfilled Daily Icon</string>
     <string name="backButton">Back Button Icon</string>
+    <string name="guideList">Guide List Icon</string>
+    <string name ="heartRateData">Health Data Icon</string>
+    <string name ="settingsIcon">Settings Icon</string>
 
 </resources>
