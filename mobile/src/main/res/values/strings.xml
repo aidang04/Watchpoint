@@ -8,6 +8,7 @@
     <string name="welcome">Welcome to Watchpoint.</string>
     <string name="allGuides">View All Guides.</string>
     <string name="heartRate">View Health Info.</string>
+    <string name="dailyTasks">Daily Tasks</string>
 
     Placeholder Text
     <string name="loading">Loading…</string>

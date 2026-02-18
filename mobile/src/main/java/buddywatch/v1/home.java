@@ -23,6 +23,7 @@ import com.google.android.gms.wearable.NodeClient;
 import com.google.android.gms.wearable.Wearable;
 
 import java.nio.charset.StandardCharsets;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -50,8 +51,9 @@ public class home extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        // Creates data access object to interact with Guide table.
+        // Creates data access objects to interact with Guide table.
         GuideDAO gDAO = db.gdao();
+        ActivityDAO aDAO = db.adao();
 
         Thread dbCheckDatabase = new Thread(() -> {
             if(gDAO.countGuides() == 0){
@@ -60,10 +62,10 @@ public class home extends AppCompatActivity {
         });
 
         // Prepares atomic reference object.
-        AtomicReference<List<Guide>> aGuides = new AtomicReference<>(new ArrayList<>());
+        AtomicReference<List<Guide>> atomicGuides = new AtomicReference<>(new ArrayList<>());
 
         // Uses atomic object to store all guides.
-        Thread dbGetAllGuides = new Thread(() -> aGuides.set(gDAO.getAllGuides()));
+        Thread dbGetAllGuides = new Thread(() -> atomicGuides.set(gDAO.getAllGuides()));
 
         try{
             // Checks if database is empty, if so, fills with guides.
@@ -79,7 +81,7 @@ public class home extends AppCompatActivity {
         }
 
         // Passes atomic object into actual object for use.
-        List<Guide> guides = aGuides.get();
+        List<Guide> guides = atomicGuides.get();
 
         LinearLayout guideContainer = findViewById(R.id.guides);
 
@@ -87,7 +89,14 @@ public class home extends AppCompatActivity {
         for(int i = 0; i < guides.size(); i++) {
             Guide guide = guides.get(i);
 
-            createDailyBox(db, guideContainer, guide.id, guide.guideName, false);
+            Thread dbCheckCompleted = new Thread(() -> createDailyBox(db, guideContainer, guide.id, guide.guideName, aDAO.checkIfComplete(guide.id)));
+
+            try {
+                dbCheckCompleted.start();
+                dbCheckCompleted.join();
+            }catch (InterruptedException e){
+                throw new RuntimeException();
+            }
 
         }
 
@@ -95,7 +104,10 @@ public class home extends AppCompatActivity {
 
     private void viewGuide(int id, String name, GuideDatabase db){
 
+        // Sets view to a template for the guide launch view.
         setContentView(R.layout.guideview);
+
+        // Obtains references for elements of the view.
         Button start = findViewById(R.id.send);
         TextView title = findViewById(R.id.title);
         ImageView favourite = findViewById(R.id.favourite);
@@ -214,11 +226,12 @@ public class home extends AppCompatActivity {
 
     }
 
-    private void createDailyBox(GuideDatabase db, LinearLayout addTo, int id, String title, boolean completed){
+    private void createDailyBox(GuideDatabase db, LinearLayout addTo, int id, String title, int completed){
 
         Context context = addTo.getContext();
         DisplayMetrics disp = context.getResources().getDisplayMetrics();
 
+        // Create CardView and set Parameters
         CardView card = new CardView(context);
         LinearLayout.LayoutParams cardP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
@@ -229,6 +242,7 @@ public class home extends AppCompatActivity {
         card.setLayoutParams(cardP);
         card.setRadius(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, disp));
 
+        // Create TextView and set Parameters
         TextView textView = new TextView(context);
         textView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
@@ -236,19 +250,21 @@ public class home extends AppCompatActivity {
         textView.setTextAlignment(ViewGroup.TEXT_ALIGNMENT_CENTER);
         textView.setPadding(0, padding, 0, padding);
 
+        // Create CheckBox and set Parameters
         CheckBox check = new CheckBox(context);
         FrameLayout.LayoutParams checkP = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
         checkP.gravity = Gravity.END;
         check.setLayoutParams(checkP);
-        check.setChecked(completed);
+        check.setChecked(completed > 0);
 
+        // Assemble TextView and CheckBox into CardView
         card.addView(textView);
         card.addView(check);
 
-        card.setOnClickListener(v -> {
-            viewGuide(id, title, db);
-        });
+        // Sets a listener on the card which when clicked displays the launch page for the selected guide.
+        card.setOnClickListener(v -> viewGuide(id, title, db));
 
+        // Add CardView to parent view
         addTo.addView(card);
 
     }

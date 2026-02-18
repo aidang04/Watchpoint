@@ -23,8 +23,8 @@ public interface ActivityDAO {
     @Query("SELECT * FROM Activity WHERE dateCompleted = :today")
     List<Activity> getTodaysActivities(Date today);
 
-    @Query("SELECT * FROM Activity WHERE guideID = :gid AND dateCompleted = :today")
-    List<Activity> checkIfComplete(int gid, Date today);
+    @Query("SELECT COUNT(*) FROM Activity WHERE guideID = :gid AND dateCompleted = date('now')")
+    int checkIfComplete(int gid);
 
     @Query("SELECT * FROM Activity WHERE concernIdentified = TRUE AND concernAddressed = FALSE")
     List<Activity> checkForUnaddressedConcerns();
