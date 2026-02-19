@@ -25,6 +25,9 @@ android {
                 "proguard-rules.pro"
             )
         }
+        debug {
+            isDebuggable = true
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -46,4 +49,10 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     wearApp(project(":wear"))
+    val room_version = "2.8.4"
+
+    implementation("androidx.room:room-runtime:$room_version")
+    annotationProcessor("androidx.room:room-compiler:$room_version")
+    testImplementation("androidx.room:room-testing:$room_version")
+
 }
