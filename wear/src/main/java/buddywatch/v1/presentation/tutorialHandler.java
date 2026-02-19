@@ -25,9 +25,6 @@ import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.Wearable;
 
 import java.nio.ByteBuffer;
-import java.time.Instant;
-import java.time.LocalTime;
-import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -1,41 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.wear.widget.BoxInsetLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/holo_blue_light"
     android:gravity="center"
-    android:id="@+id/root">
+    android:id="@+id/root"
+    android:padding="15dp">
 
-    <!-- Rounded rectangle background -->
-    <FrameLayout
-        android:layout_width="175dp"
-        android:layout_height="150dp"
-        android:layout_gravity="center"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:background="@drawable/rect_border"
-        android:padding="16dp">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <!-- Text inside rectangle -->
-        <TextView
-            android:id="@+id/textView"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0sp"
+            android:layout_height="0sp"
+            android:background="@drawable/rect_border"
+            app:layout_constraintBottom_toBottomOf="@id/bottom"
+            app:layout_constraintEnd_toEndOf="@id/end"
+            app:layout_constraintStart_toStartOf="@id/start"
+            app:layout_constraintTop_toTopOf="@+id/top">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/loading"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"
+                android:id="@+id/textView"
+                app:layout_constraintBottom_toBottomOf="@id/underText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/bpmView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/loadBPM"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="11sp"
+                android:textStyle="italic"
+                app:layout_constraintStart_toStartOf="@id/beforeBPM"
+                app:layout_constraintBottom_toBottomOf="@id/underBPM"
+                />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/underText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.6" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/underBPM"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.2" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/beforeBPM"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.65" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/loading"
-            android:textColor="@android:color/black"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_gravity="center"/>
-        
-        <TextView
-            android:id="@+id/bpmView"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.05" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end|top"
-            android:text="@string/loadBPM"
-            android:textColor="@android:color/darker_gray"
-            android:textSize="12sp"
-            />
-    </FrameLayout>
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.95" />
 
-</FrameLayout>
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.1" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.9" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.wear.widget.BoxInsetLayout>
