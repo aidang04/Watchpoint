@@ -83,12 +83,11 @@ public class tutorialHandler extends Activity {
                 textView.setText(out);
             }
 
-            findViewById(R.id.root).setOnClickListener(v -> {
+            findViewById(R.id.forward).setOnClickListener(v -> {
                 curLine++;
                 if (curLine >= lines.length){
                     String out = "The Tutorial is over.";
                     textView.setText(out);
-
 
                     v.postDelayed(this::finish, 1000);
                     stopTracking();
@@ -96,6 +95,14 @@ public class tutorialHandler extends Activity {
                 }
                 String out = "Step " + (curLine + 1) + ". " + lines[curLine];
                 textView.setText(out);
+            });
+
+            findViewById(R.id.back).setOnClickListener(v -> {
+                if (!(curLine < 1)){
+                curLine--;
+                String out = "Step " + (curLine + 1) + ". " + lines[curLine];
+                textView.setText(out);
+                }
             });
 
         }
@@ -141,12 +148,10 @@ public class tutorialHandler extends Activity {
             @Override
             public void onDataReceived(DataPointContainer dataPointContainer) {
 
-                Log.d("HR_DATA", "Received HR data");
-
                 for(SampleDataPoint<Double> dp : dataPointContainer.getData(DataType.HEART_RATE_BPM)){
 
                     recorder.add(new HeartRateRecord(System.currentTimeMillis(), dp.getValue()));
-                    runOnUiThread(() -> bpmView.setText(res.getString(R.string.bpm, dp.getValue())));
+                    runOnUiThread(() -> bpmView.setText(res.getString(R.string.bpm, dp.getValue().intValue())));
 
                 }
 
@@ -160,6 +165,7 @@ public class tutorialHandler extends Activity {
     public void stopTracking(){
         if(mClient != null && callback != null){
              mClient.unregisterMeasureCallbackAsync(DataType.HEART_RATE_BPM, callback);
+             sendData();
         }
     }
 

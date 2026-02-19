@@ -1,5 +1,7 @@
 package buddywatch.v1;
 
+import android.util.Log;
+
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.WearableListenerService;
 
@@ -22,6 +24,7 @@ public class HeartRateListener extends WearableListenerService {
                 double bpm = buffer.getDouble();
 
                 records.add(new HeartRateRecord(timestamp, bpm));
+                Log.d("Debug", "timestamp: " + timestamp + ". bpm: " + bpm);
             }
 
         }

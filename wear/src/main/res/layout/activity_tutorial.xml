@@ -1,7 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.wear.widget.BoxInsetLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="0sp"
+        android:layout_height="0sp"
+        android:id="@+id/back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/trueMiddle"/>
+
+    <FrameLayout
+        android:layout_width="0sp"
+        android:layout_height="0sp"
+        android:id="@+id/forward"
+        app:layout_constraintStart_toStartOf="@id/trueMiddle"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <androidx.wear.widget.BoxInsetLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/holo_blue_light"
@@ -23,12 +45,12 @@
             app:layout_constraintTop_toTopOf="@+id/top">
 
             <TextView
+                android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/loading"
                 android:textColor="@android:color/black"
                 android:textStyle="bold"
-                android:id="@+id/textView"
                 app:layout_constraintBottom_toBottomOf="@id/underText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -41,9 +63,8 @@
                 android:textColor="@android:color/darker_gray"
                 android:textSize="11sp"
                 android:textStyle="italic"
-                app:layout_constraintStart_toStartOf="@id/beforeBPM"
                 app:layout_constraintBottom_toBottomOf="@id/underBPM"
-                />
+                app:layout_constraintStart_toStartOf="@id/beforeBPM" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/underText"
@@ -98,4 +119,13 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.wear.widget.BoxInsetLayout>
+    </androidx.wear.widget.BoxInsetLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/trueMiddle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
