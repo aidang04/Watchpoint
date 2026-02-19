@@ -1,8 +1,11 @@
 package buddywatch.v1.presentation;
 
+import static java.time.MonthDay.now;
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
@@ -18,6 +21,13 @@ import androidx.health.services.client.data.DataPointContainer;
 import androidx.health.services.client.data.DeltaDataType;
 import androidx.health.services.client.data.SampleDataPoint;
 
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.Wearable;
+
+import java.nio.ByteBuffer;
+import java.time.Instant;
+import java.time.LocalTime;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,9 +43,7 @@ public class tutorialHandler extends Activity {
     int curLine;
     private TextView textView;
     private TextView bpmView;
-
-    double curbpm;
-    ArrayList<Double> bpms = new ArrayList<>();
+    ArrayList<HeartRateRecord> recorder = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstance){
@@ -95,7 +103,7 @@ public class tutorialHandler extends Activity {
 
         }
         catch(IOException e){
-            textView.setText("Error reading file.");
+            textView.setText(R.string.fileError);
         }
     }
 
@@ -119,15 +127,13 @@ public class tutorialHandler extends Activity {
 
             }
         }
-        else{
-            Log.d("reqPerm", "line 130");
-        }
     }
 
     public void trackHeartrate(){
 
         HealthServicesClient hClient = HealthServices.getClient(this);
         mClient = hClient.getMeasureClient();
+        Resources res = getResources();
 
         callback = new MeasureCallback() {
             @Override
@@ -141,10 +147,9 @@ public class tutorialHandler extends Activity {
                 Log.d("HR_DATA", "Received HR data");
 
                 for(SampleDataPoint<Double> dp : dataPointContainer.getData(DataType.HEART_RATE_BPM)){
-                    curbpm = dp.getValue();
-                    bpms.add(curbpm);
 
-                    runOnUiThread(() -> bpmView.setText(Double.toString(curbpm) + " bpm"));
+                    recorder.add(new HeartRateRecord(System.currentTimeMillis(), dp.getValue()));
+                    runOnUiThread(() -> bpmView.setText(res.getString(R.string.bpm, dp.getValue())));
 
                 }
 
@@ -176,6 +181,27 @@ public class tutorialHandler extends Activity {
         is.close();
 
         return sb.toString().split("\n");
+
+    }
+
+    private void sendData(){
+
+        // Creates a buffer with enough memory to hold all entries in the Heartrate + Timestamp recorder.
+        ByteBuffer buffer = ByteBuffer.allocate(recorder.size() * 16);
+
+        // Loops through recorder and adds each element to the buffer.
+        for(HeartRateRecord r : recorder){
+            buffer.putLong(r.timestamp);
+            buffer.putDouble(r.bpm);
+        }
+
+        byte[] payload = buffer.array();
+
+        Wearable.getNodeClient(this).getConnectedNodes().addOnSuccessListener(nodes -> {
+            for(Node node : nodes){
+                Wearable.getMessageClient(this).sendMessage(node.getId(), "/heart_rate_data", payload);
+            }
+        });
 
     }
 
