@@ -23,7 +23,6 @@ import com.google.android.gms.wearable.NodeClient;
 import com.google.android.gms.wearable.Wearable;
 
 import java.nio.charset.StandardCharsets;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -41,7 +40,7 @@ public class home extends AppCompatActivity {
                 getApplicationContext(),
                 GuideDatabase.class,
                 "guide_database"
-        ).build();
+        ).fallbackToDestructiveMigration(true).build();
 
         viewHome(db);
 
@@ -89,7 +88,7 @@ public class home extends AppCompatActivity {
         for(int i = 0; i < guides.size(); i++) {
             Guide guide = guides.get(i);
 
-            Thread dbCheckCompleted = new Thread(() -> createDailyBox(db, guideContainer, guide.id, guide.guideName, aDAO.checkIfComplete(guide.id)));
+            Thread dbCheckCompleted = new Thread(() -> createDailyBox(db, guideContainer, guide.filepath, guide.guideName, aDAO.checkIfComplete(guide.filepath)));
 
             try {
                 dbCheckCompleted.start();
@@ -102,7 +101,7 @@ public class home extends AppCompatActivity {
 
     }
 
-    private void viewGuide(int id, String name, GuideDatabase db){
+    private void viewGuide(String filepath, String name, GuideDatabase db){
 
         // Sets view to a template for the guide launch view.
         setContentView(R.layout.guideview);
@@ -118,7 +117,7 @@ public class home extends AppCompatActivity {
 
         GuideDAO gDAO = db.gdao();
 
-        Thread dbGetGuide = new Thread(() -> results.set(gDAO.getGuideById(id)));
+        Thread dbGetGuide = new Thread(() -> results.set(gDAO.getGuideByFilepath(filepath)));
 
         try{
             dbGetGuide.start();
@@ -144,34 +143,17 @@ public class home extends AppCompatActivity {
         });
 
         // Sets listener on send button to send filepath for requested guide.
-        start.setOnClickListener(v -> {
-
-            AtomicReference<String> filepath = new AtomicReference<>();
-            Thread dbGetFilepath = new Thread(() -> filepath.set(gDAO.getGuideFilepathById(id)));
-
-            try{
-                dbGetFilepath.start();
-                dbGetFilepath.join();
-            } catch (InterruptedException e) {
-                // TODO: Handle Gracefully
-                throw new RuntimeException(e);
-            }
-
-            String fp = filepath.get();
-            Log.d("Debug", "Sent: " + fp);
-            sendCommand(fp);
-
-        });
+        start.setOnClickListener(v -> sendCommand(filepath));
 
         // Sets listeners to allow user to toggle options on each guide.
         favourite.setOnClickListener(v -> {
             toggleFav(favourite);
-            Thread dbToggleFav = new Thread(() -> gDAO.toggleFav(id));
+            Thread dbToggleFav = new Thread(() -> gDAO.toggleFav(filepath));
             dbToggleFav.start();
         });
         daily.setOnClickListener(v -> {
             toggleDaily(daily);
-            Thread dbToggleDaily = new Thread(() -> gDAO.toggleDaily(id));
+            Thread dbToggleDaily = new Thread(() -> gDAO.toggleDaily(filepath));
             dbToggleDaily.start();
         });
 
@@ -226,7 +208,7 @@ public class home extends AppCompatActivity {
 
     }
 
-    private void createDailyBox(GuideDatabase db, LinearLayout addTo, int id, String title, int completed){
+    private void createDailyBox(GuideDatabase db, LinearLayout addTo, String filepath, String title, int completed){
 
         Context context = addTo.getContext();
         DisplayMetrics disp = context.getResources().getDisplayMetrics();
@@ -262,7 +244,7 @@ public class home extends AppCompatActivity {
         card.addView(check);
 
         // Sets a listener on the card which when clicked displays the launch page for the selected guide.
-        card.setOnClickListener(v -> viewGuide(id, title, db));
+        card.setOnClickListener(v -> viewGuide(filepath, title, db));
 
         // Add CardView to parent view
         addTo.addView(card);

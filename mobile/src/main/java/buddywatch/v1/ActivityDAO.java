@@ -6,6 +6,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Dao
@@ -23,13 +24,10 @@ public interface ActivityDAO {
     @Query("SELECT * FROM Activity WHERE dateCompleted = :today")
     List<Activity> getTodaysActivities(Date today);
 
-    @Query("SELECT COUNT(*) FROM Activity WHERE guideID = :gid AND dateCompleted = date('now')")
-    int checkIfComplete(int gid);
+    @Query("SELECT guidePath FROM Activity WHERE dateCompleted = (SELECT MAX(dateCompleted) FROM Activity)")
+    Activity getRecentActivity();
 
-    @Query("SELECT * FROM Activity WHERE concernIdentified = TRUE AND concernAddressed = FALSE")
-    List<Activity> checkForUnaddressedConcerns();
-
-    @Query("UPDATE Activity SET concernAddressed = TRUE WHERE id = :id AND concernAddressed = FALSE")
-    void addressConcern(int id);
+    @Query("SELECT COUNT(*) FROM Activity WHERE guidePath = :gPath AND dateCompleted = date('now')")
+    int checkIfComplete(String gPath);
 
 }

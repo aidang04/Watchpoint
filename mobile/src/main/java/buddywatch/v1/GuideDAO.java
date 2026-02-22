@@ -19,32 +19,29 @@ public interface GuideDAO {
     @Insert
     void insertAll(List<Guide> guides);
 
-    @Query("SELECT * FROM Guide WHERE id = :id")
-    Guide getGuideById(int id);
+    @Query("SELECT * FROM Guide WHERE filepath = :fpath")
+    Guide getGuideByFilepath(String fpath);
 
-    @Query("SELECT filepath FROM Guide WHERE id = :id")
-    String getGuideFilepathById(int id);
-
-    @Query("SELECT * FROM Guide ORDER BY id ASC")
+    @Query("SELECT * FROM Guide")
     List<Guide> getAllGuides();
 
     @Query("SELECT * FROM Guide WHERE markedFavourite = TRUE")
     List<Guide> getFavourites();
 
-    @Query("UPDATE Guide SET markedFavourite = NOT markedFavourite WHERE id = :id")
-    void toggleFav(int id);
+    @Query("UPDATE Guide SET markedFavourite = NOT markedFavourite WHERE filepath = :fpath")
+    void toggleFav(String fpath);
 
     @Query("SELECT * FROM Guide WHERE markedDaily = TRUE")
     List<Guide> getDailys();
 
-    @Query("UPDATE Guide SET markedDaily = NOT markedDaily WHERE id = :id")
-    void toggleDaily(int id);
+    @Query("UPDATE Guide SET markedDaily = NOT markedDaily WHERE filepath = :fpath")
+    void toggleDaily(String fpath);
 
-    @Query("SELECT markedFavourite FROM Guide WHERE id = :id")
-    Boolean isFavourite(int id);
+    @Query("SELECT markedFavourite FROM Guide WHERE filepath = :fpath")
+    Boolean isFavourite(String fpath);
 
-    @Query("SELECT markedDaily FROM Guide WHERE id = :id")
-    Boolean isDaily(int id);
+    @Query("SELECT markedDaily FROM Guide WHERE filepath = :fpath")
+    Boolean isDaily(String fpath);
 
     @Query("SELECT COUNT(*) FROM Guide")
     int countGuides();

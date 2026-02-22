@@ -25,6 +25,7 @@ import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.Wearable;
 
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -189,6 +190,8 @@ public class tutorialHandler extends Activity {
 
     private void sendData(){
 
+        String path = getIntent().getStringExtra("TUTORIAL_PATH");
+
         // Creates a buffer with enough memory to hold all entries in the Heartrate + Timestamp recorder.
         ByteBuffer buffer = ByteBuffer.allocate(recorder.size() * 16);
 
@@ -198,10 +201,12 @@ public class tutorialHandler extends Activity {
             buffer.putDouble(r.bpm);
         }
 
+        byte[] pathPayload = path != null ? path.getBytes(StandardCharsets.UTF_8) : new byte[0];
         byte[] payload = buffer.array();
 
         Wearable.getNodeClient(this).getConnectedNodes().addOnSuccessListener(nodes -> {
             for(Node node : nodes){
+                Wearable.getMessageClient(this).sendMessage(node.getId(), "/path", pathPayload);
                 Wearable.getMessageClient(this).sendMessage(node.getId(), "/heart_rate_data", payload);
             }
         });

@@ -1,22 +1,25 @@
 package buddywatch.v1;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+
+import org.jetbrains.annotations.NotNull;
 
 @Entity
 public class Guide {
 
-    @PrimaryKey(autoGenerate = true)
-    public int id;
+    @PrimaryKey
+    @NotNull
+    public String filepath;
 
     public String guideName;
-    public String filepath;
     public Boolean markedFavourite;
     public Boolean markedDaily;
 
     public Guide(){}
 
-    public Guide(String name, String fpath){
+    public Guide(String name, @NonNull String fpath){
 
         this.guideName = name;
         this.filepath = fpath;
