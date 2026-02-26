@@ -11,7 +11,6 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class HeartRateListener extends WearableListenerService {
 
@@ -127,7 +126,6 @@ public class HeartRateListener extends WearableListenerService {
             });
 
             dbInsertHeartEvent.start();
-
 
         }
 

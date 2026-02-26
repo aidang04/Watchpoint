@@ -9,6 +9,8 @@
     <string name="allGuides">View All Guides.</string>
     <string name="heartRate">View Health Info.</string>
     <string name="dailyTasks">Daily Tasks</string>
+    <string name="deleteData">Delete All Heart-rate Data.</string>
+    <string name="history">Heart-rate Data History</string>
 
     Placeholder Text
     <string name="loading">Loading…</string>
@@ -20,5 +22,7 @@
     <string name="guideList">Guide List Icon</string>
     <string name ="heartRateData">Health Data Icon</string>
     <string name ="settingsIcon">Settings Icon</string>
+    <string name ="deleteIcon">Delete Icon</string>
+    <string name="homeIcon">Home Icon</string>
 
 </resources>
