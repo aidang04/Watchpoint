@@ -89,9 +89,8 @@ public class tutorialHandler extends Activity {
                 if (curLine >= lines.length){
                     String out = "The Tutorial is over.";
                     textView.setText(out);
-
-                    v.postDelayed(this::finish, 1000);
                     stopTracking();
+                    v.postDelayed(this::finish, 1000);
                     return;
                 }
                 String out = "Step " + (curLine + 1) + ". " + lines[curLine];
@@ -166,6 +165,7 @@ public class tutorialHandler extends Activity {
     public void stopTracking(){
         if(mClient != null && callback != null){
              mClient.unregisterMeasureCallbackAsync(DataType.HEART_RATE_BPM, callback);
+             Log.d("Debug", "got to stoptracking.");
              sendData();
         }
     }
@@ -191,9 +191,13 @@ public class tutorialHandler extends Activity {
     private void sendData(){
 
         String path = getIntent().getStringExtra("TUTORIAL_PATH");
+        byte[] pathPayload = path != null ? path.getBytes(StandardCharsets.UTF_8) : new byte[0];
 
         // Creates a buffer with enough memory to hold all entries in the Heartrate + Timestamp recorder.
-        ByteBuffer buffer = ByteBuffer.allocate(recorder.size() * 16);
+        ByteBuffer buffer = ByteBuffer.allocate(4 + pathPayload.length + recorder.size() * 16);
+
+        buffer.putInt(pathPayload.length);
+        buffer.put(pathPayload);
 
         // Loops through recorder and adds each element to the buffer.
         for(HeartRateRecord r : recorder){
@@ -201,15 +205,14 @@ public class tutorialHandler extends Activity {
             buffer.putDouble(r.bpm);
         }
 
-        byte[] pathPayload = path != null ? path.getBytes(StandardCharsets.UTF_8) : new byte[0];
         byte[] payload = buffer.array();
 
         Wearable.getNodeClient(this).getConnectedNodes().addOnSuccessListener(nodes -> {
             for(Node node : nodes){
-                Wearable.getMessageClient(this).sendMessage(node.getId(), "/path", pathPayload);
-                Wearable.getMessageClient(this).sendMessage(node.getId(), "/heart_rate_data", payload);
+                Log.d("", "aaa");
+                Wearable.getMessageClient(this).sendMessage(node.getId(), "/guide_data", payload).addOnFailureListener(e -> Log.d("debug", "defo"));
             }
-        });
+        }).addOnFailureListener(e -> Log.d("Debug", "didnt send"));
 
     }
 

@@ -15,7 +15,10 @@ public interface HeartEventDAO {
     @Query("UPDATE HeartEvent SET addressed = TRUE WHERE id = :id")
     void addressEvent(int id);
 
-    @Query("SELECT * FROM HeartEvent WHERE addressed = FALSE")
+    @Query("SELECT * FROM HeartEvent WHERE addressed = FALSE AND severity != 'None'")
     List<HeartEvent> checkUnaddressed();
+
+    @Query("DELETE FROM HeartEvent")
+    void deleteAllData();
 
 }

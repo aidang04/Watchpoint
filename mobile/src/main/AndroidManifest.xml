@@ -29,7 +29,7 @@
                 <data
                     android:scheme="wear"
                     android:host="*"
-                    android:pathPrefix="/heart_rate_data" />
+                    android:pathPrefix="/guide_data" />
             </intent-filter>
         </service>
     </application>

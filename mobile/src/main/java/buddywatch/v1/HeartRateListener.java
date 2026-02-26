@@ -15,7 +15,9 @@ import java.util.ArrayList;
 public class HeartRateListener extends WearableListenerService {
 
     @Override
-    public synchronized void onMessageReceived(MessageEvent msgEvent){
+    public void onMessageReceived(MessageEvent msgEvent){
+
+        Log.d("Debug", "Received");
 
         GuideDatabase db = Room.databaseBuilder(
                 getApplicationContext(),
@@ -23,29 +25,19 @@ public class HeartRateListener extends WearableListenerService {
                 "guide_database"
         ).build();
 
-        if(msgEvent.getPath().equals(("/path"))){
+        if(msgEvent.getPath().equals("/guide_data")){
 
-            byte[] pathPayload = msgEvent.getData();
-            String path = new String(pathPayload, StandardCharsets.UTF_8);
-            ActivityDAO adao = db.adao();
-
-            Thread dbInsertActivity = new Thread(() -> adao.insertActivity(new Activity(path, LocalDate.now())));
-
-            try{
-                dbInsertActivity.start();
-                dbInsertActivity.join();
-            } catch (InterruptedException e) {
-                // TODO: Handle Gracefully
-                throw new RuntimeException(e);
-            }
-
-
-        }else if(msgEvent.getPath().equals("/heart_rate_data")){
+            Log.d("debug", "r");
 
             byte[] payload = msgEvent.getData();
-            ArrayList<HeartRateRecord> records = new ArrayList<>();
-
             ByteBuffer buffer = ByteBuffer.wrap(payload);
+
+            int pathLen = buffer.getInt();
+            byte[] pathPayload = new byte[pathLen];
+            buffer.get(pathPayload);
+            String path = new String(pathPayload, StandardCharsets.UTF_8);
+
+            ArrayList<HeartRateRecord> records = new ArrayList<>();
             while(buffer.hasRemaining()){
                 // gets timestamp in seconds
                 long timestamp = buffer.getLong() / 1000;
@@ -55,8 +47,19 @@ public class HeartRateListener extends WearableListenerService {
                 Log.d("Debug", "timestamp: " + timestamp + ". bpm: " + bpm);
             }
 
-            assessHeartrate(records, db);
+            ActivityDAO adao = db.adao();
+            Thread dbInsertActivity = new Thread(() -> {
+                adao.insertActivity(new Activity(path, LocalDate.now()));
+                assessHeartrate(records, db);
+            });
 
+            try{
+                dbInsertActivity.start();
+                dbInsertActivity.join();
+            } catch (InterruptedException e) {
+                // TODO: Handle Gracefully
+                throw new RuntimeException(e);
+            }
         }
 
     }
@@ -88,25 +91,25 @@ public class HeartRateListener extends WearableListenerService {
         }
         average = average / records.size();
 
-        for(HeartRateRecord hr : records){
+        for(HeartRateRecord hr : records) {
 
             // Checks the current bpm against the thresholds.
-            if(average * SEVERE_STRESS <= hr.bpm && !severity.equals("Severe")){
+            if (average * SEVERE_STRESS <= hr.bpm && !severity.equals("Severe")) {
                 severity = "Severe";
-            } else if(average * MODERATE_STRESS <= hr.bpm && severity.equals("None") || severity.equals("Mild")){
+            } else if (average * MODERATE_STRESS <= hr.bpm && (severity.equals("None") || severity.equals("Mild"))) {
                 severity = "Moderate";
             } else if (average * MILD_STRESS <= hr.bpm && severity.equals("None")) {
                 severity = "Mild";
             }
 
             // Fills trackers for previous states, if both are full, checks that there is less than 8 seconds of time between all three measures, then checks if the difference in heart-rate measures is bigger than 15% of the original heart-rate.
-            if(minus1 == null){
+            if (minus1 == null) {
                 minus1 = hr;
-            }else if(minus2 == null){
+            } else if (minus2 == null) {
                 minus2 = minus1;
                 minus1 = hr;
-            } else{
-                if(hr.timestamp - minus2.timestamp < 8 && (hr.bpm - minus2.bpm) > minus2.bpm * RAPID_INCREASE){
+            } else {
+                if (hr.timestamp - minus2.timestamp < 8 && (hr.bpm - minus2.bpm) > minus2.bpm * RAPID_INCREASE) {
                     rapidDetected = true;
                 }
 
@@ -115,18 +118,18 @@ public class HeartRateListener extends WearableListenerService {
 
             }
 
-            HeartEventDAO hedao = db.hedao();
-            ActivityDAO adao = db.adao();
-            final String fseverity = severity;
-            final boolean frapid = rapidDetected;
+        }
 
-            Thread dbInsertHeartEvent = new Thread(() -> {
-                Activity recent = adao.getRecentActivity();
-                hedao.insertHeartEvent(new HeartEvent(recent.guidePath, recent.id, fseverity, frapid));
-            });
+        HeartEventDAO hedao = db.hedao();
+        ActivityDAO adao = db.adao();
+        final int faverage = Math.round(Math.round(average));
+        final String fseverity = severity;
+        final boolean frapid = rapidDetected;
 
-            dbInsertHeartEvent.start();
+        Activity recent = adao.getRecentActivity();
 
+        if(recent != null){
+            hedao.insertHeartEvent(new HeartEvent(recent.guidePath, recent.id, faverage, fseverity, frapid));
         }
 
     }

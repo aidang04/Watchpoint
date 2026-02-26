@@ -33,19 +33,22 @@ public class HeartEvent {
 
     // activity id belonging to the session which caused the event
     int aid;
+
+    int avgBPM;
     String severity;
     boolean rapid;
-    Boolean addressed;
+    boolean addressed;
 
     public HeartEvent(){}
 
-    public HeartEvent(String gPath, int aid, String severity, boolean rapid){
+    public HeartEvent(String gPath, int aid, int avgBPM, String severity, boolean rapid){
 
         this.gPath = gPath;
         this.aid = aid;
+        this.avgBPM = avgBPM;
         this.severity = severity;
         this.rapid = rapid;
-        addressed = false;
+        this.addressed = severity.equals("None");
 
     }
 

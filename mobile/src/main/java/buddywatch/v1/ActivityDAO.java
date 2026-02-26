@@ -24,7 +24,7 @@ public interface ActivityDAO {
     @Query("SELECT * FROM Activity WHERE dateCompleted = :today")
     List<Activity> getTodaysActivities(Date today);
 
-    @Query("SELECT guidePath FROM Activity WHERE dateCompleted = (SELECT MAX(dateCompleted) FROM Activity)")
+    @Query("SELECT * FROM Activity WHERE dateCompleted = (SELECT MAX(dateCompleted) FROM Activity)")
     Activity getRecentActivity();
 
     @Query("SELECT COUNT(*) FROM Activity WHERE guidePath = :gPath AND dateCompleted = date('now')")

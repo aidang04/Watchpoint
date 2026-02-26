@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.room.Room;
 
 import com.google.android.gms.wearable.Node;
@@ -98,6 +99,9 @@ public class home extends AppCompatActivity {
             }
 
         }
+
+        CardView heartCard = findViewById(R.id.heartRate);
+        heartCard.setOnClickListener(v -> heartData(db));
 
     }
 
@@ -237,6 +241,7 @@ public class home extends AppCompatActivity {
         FrameLayout.LayoutParams checkP = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
         checkP.gravity = Gravity.END;
         check.setLayoutParams(checkP);
+        check.setClickable(false);
         check.setChecked(completed > 0);
 
         // Assemble TextView and CheckBox into CardView
@@ -262,7 +267,56 @@ public class home extends AppCompatActivity {
                         Log.e("PhoneApp", "Failed to send: " + tut));
             }
         });
+    }
+
+    private void heartData(GuideDatabase db){
+
+        setContentView(R.layout.heart_view);
+
+        ImageView home = findViewById(R.id.home);
+        home.setOnClickListener(v -> viewHome(db));
+
 
 
     }
+
+    private void createHeartBox(LinearLayout addTo, String title, int avgBPM, boolean concern){
+
+        Context context = addTo.getContext();
+        DisplayMetrics disp = context.getResources().getDisplayMetrics();
+
+        // Create CardView and set Parameters
+        CardView card = new CardView(context);
+        LinearLayout.LayoutParams cardP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        int margin = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, disp));
+        int padding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 13, disp));
+
+        cardP.setMargins(0,0,0,margin);
+        card.setLayoutParams(cardP);
+        card.setRadius(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, disp));
+
+        // Create TextView and set Parameters
+        TextView textView = new TextView(context);
+        textView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+        textView.setText(title);
+        textView.setTextAlignment(ViewGroup.TEXT_ALIGNMENT_CENTER);
+        textView.setPadding(0, padding, 0, padding);
+
+        TextView bpm = new TextView(context);
+        bpm.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        String bpmToDisplay = avgBPM + " bpm";
+        bpm.setText(bpmToDisplay);
+        bpm.setTextAlignment(ViewGroup.TEXT_ALIGNMENT_VIEW_END);
+
+        if (concern){
+            card.setCardBackgroundColor(ContextCompat.getColor(context, R.color.red));
+            textView.setTextColor(ContextCompat.getColor(context, R.color.white));
+            bpm.setTextColor(ContextCompat.getColor(context, R.color.white));
+        }
+
+    }
+
 }

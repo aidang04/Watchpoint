@@ -89,6 +89,7 @@
     </androidx.cardview.widget.CardView>
 
     <ImageView
+        android:id="@+id/home"
         android:layout_width="0sp"
         android:layout_height="0sp"
         android:src="@drawable/home"
