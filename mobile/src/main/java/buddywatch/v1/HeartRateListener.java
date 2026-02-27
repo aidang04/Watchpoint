@@ -19,11 +19,7 @@ public class HeartRateListener extends WearableListenerService {
 
         Log.d("Debug", "Received");
 
-        GuideDatabase db = Room.databaseBuilder(
-                getApplicationContext(),
-                GuideDatabase.class,
-                "guide_database"
-        ).build();
+        GuideDatabase db = GuideDatabaseConnection.getInstance(getApplicationContext()).getDb();
 
         if(msgEvent.getPath().equals("/guide_data")){
 

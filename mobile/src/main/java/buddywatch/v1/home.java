@@ -36,12 +36,8 @@ public class home extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Builds our database connection, for storing guides and user data.
-        GuideDatabase db = Room.databaseBuilder(
-                getApplicationContext(),
-                GuideDatabase.class,
-                "guide_database"
-        ).fallbackToDestructiveMigration(true).build();
+        // Calls a singleton GuideDatabase instance.
+        GuideDatabase db = GuideDatabaseConnection.getInstance(getApplicationContext()).getDb();
 
         viewHome(db);
 
