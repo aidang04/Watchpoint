@@ -97,7 +97,7 @@
         android:id="@+id/heartRate"
         android:layout_width="0sp"
         android:layout_height="0sp"
-        app:cardCornerRadius="10sp"
+        app:cardCornerRadius="30sp"
         app:layout_constraintBottom_toBottomOf="@id/aboveSettings"
         app:layout_constraintEnd_toEndOf="@id/end"
         app:layout_constraintStart_toStartOf="@id/beforeHeart"

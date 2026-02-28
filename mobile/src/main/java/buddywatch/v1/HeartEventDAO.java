@@ -12,6 +12,9 @@ public interface HeartEventDAO {
     @Insert
     void insertHeartEvent(HeartEvent he);
 
+    @Query("SELECT * FROM HeartEvent")
+    List<HeartEvent> getAllHeartEvent();
+
     @Query("UPDATE HeartEvent SET addressed = TRUE WHERE id = :id")
     void addressEvent(int id);
 
