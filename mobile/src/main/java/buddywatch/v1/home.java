@@ -72,8 +72,7 @@ public class home extends AppCompatActivity {
             dbGetAllGuides.start();
             dbGetAllGuides.join();
         } catch (InterruptedException e) {
-            // TODO: Handle Gracefully
-            throw new RuntimeException(e);
+            ErrorHandler.handle(e, getApplicationContext(), "Database Error. \n Please contact the maintainer at aidan.gowdy.2022@uni.strath.ac.uk.");
         }
 
         // Passes atomic object into actual object for use.
@@ -123,8 +122,7 @@ public class home extends AppCompatActivity {
             dbGetGuide.start();
             dbGetGuide.join();
         } catch (InterruptedException e) {
-            // TODO: Handle Gracefully
-            throw new RuntimeException(e);
+            ErrorHandler.handle(e, getApplicationContext(), "Database Error. \n Please contact the maintainer at aidan.gowdy.2022@uni.strath.ac.uk.");
         }
 
         Guide current = results.get();
@@ -202,8 +200,7 @@ public class home extends AppCompatActivity {
             dbPopulate.join();
         }
         catch (InterruptedException e){
-            // TODO : Handle Gracefully
-            throw new RuntimeException();
+            ErrorHandler.handle(e, getApplicationContext(), "Database Error. \n Please contact the maintainer at aidan.gowdy.2022@uni.strath.ac.uk.");
         }
 
     }
@@ -272,7 +269,17 @@ public class home extends AppCompatActivity {
         ImageView home = findViewById(R.id.home);
         home.setOnClickListener(v -> viewHome(db));
 
+        HeartEventDAO hedao = db.hedao();
+        AtomicReference<List<HeartEvent>> atomicHeartEventList = new AtomicReference<>(new ArrayList<>());
 
+        Thread dbGetHeartEvents = new Thread(() -> atomicHeartEventList.set(hedao.getAllHeartEvent()));
+
+        try{
+            dbGetHeartEvents.start();
+            dbGetHeartEvents.join();
+        } catch (InterruptedException e) {
+            ErrorHandler.handle(e, getApplicationContext(), "Database Error. \n Please contact the maintainer at aidan.gowdy.2022@uni.strath.ac.uk.");
+        }
 
     }
 

@@ -28,7 +28,7 @@ public class HeartEvent {
     @PrimaryKey(autoGenerate = true)
     int id;
 
-    // guide id where the event occured.
+    // guide id where the event occurred.
     String gPath;
 
     // activity id belonging to the session which caused the event

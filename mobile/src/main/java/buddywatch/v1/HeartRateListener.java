@@ -53,8 +53,7 @@ public class HeartRateListener extends WearableListenerService {
                 dbInsertActivity.start();
                 dbInsertActivity.join();
             } catch (InterruptedException e) {
-                // TODO: Handle Gracefully
-                throw new RuntimeException(e);
+                ErrorHandler.handle(e, getApplicationContext(), "Database Error. \n Please contact the maintainer at aidan.gowdy.2022@uni.strath.ac.uk.");
             }
         }
 
