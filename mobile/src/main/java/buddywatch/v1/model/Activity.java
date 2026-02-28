@@ -1,4 +1,4 @@
-package buddywatch.v1;
+package buddywatch.v1.model;
 
 import androidx.room.Entity;
 import androidx.room.ForeignKey;

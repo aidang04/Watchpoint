@@ -1,4 +1,4 @@
-package buddywatch.v1;
+package buddywatch.v1.util;
 
 import android.content.Context;
 import android.util.Log;

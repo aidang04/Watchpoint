@@ -1,4 +1,4 @@
-package buddywatch.v1;
+package buddywatch.v1.util;
 
 public class HeartRateRecord {
     public long timestamp;

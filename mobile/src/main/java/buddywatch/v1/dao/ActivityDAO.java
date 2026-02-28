@@ -1,4 +1,4 @@
-package buddywatch.v1;
+package buddywatch.v1.dao;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -6,8 +6,9 @@ import androidx.room.Insert;
 import androidx.room.Query;
 
 import java.sql.Date;
-import java.time.LocalDate;
 import java.util.List;
+
+import buddywatch.v1.model.Activity;
 
 @Dao
 public interface ActivityDAO {

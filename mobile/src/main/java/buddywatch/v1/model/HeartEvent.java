@@ -1,4 +1,4 @@
-package buddywatch.v1;
+package buddywatch.v1.model;
 
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
@@ -26,18 +26,18 @@ import androidx.room.PrimaryKey;
 public class HeartEvent {
 
     @PrimaryKey(autoGenerate = true)
-    int id;
+    public int id;
 
     // guide id where the event occurred.
-    String gPath;
+    public String gPath;
 
     // activity id belonging to the session which caused the event
-    int aid;
+    public int aid;
 
-    int avgBPM;
-    String severity;
-    boolean rapid;
-    boolean addressed;
+    public int avgBPM;
+    public String severity;
+    public boolean rapid;
+    public boolean addressed;
 
     public HeartEvent(){}
 

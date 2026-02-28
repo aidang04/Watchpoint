@@ -1,9 +1,17 @@
-package buddywatch.v1;
+package buddywatch.v1.database;
 
 import androidx.room.AutoMigration;
 import androidx.room.Database;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
+
+import buddywatch.v1.model.HeartEvent;
+import buddywatch.v1.dao.HeartEventDAO;
+import buddywatch.v1.dao.ActivityDAO;
+import buddywatch.v1.dao.GuideDAO;
+import buddywatch.v1.model.Activity;
+import buddywatch.v1.model.Guide;
+import buddywatch.v1.util.Converters;
 
 
 @Database(

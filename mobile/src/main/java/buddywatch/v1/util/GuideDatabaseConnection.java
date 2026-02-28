@@ -1,8 +1,10 @@
-package buddywatch.v1;
+package buddywatch.v1.util;
 
 import android.content.Context;
 
 import androidx.room.Room;
+
+import buddywatch.v1.database.GuideDatabase;
 
 // A singleton used to store a connection to the locally stored guide database.
 public class GuideDatabaseConnection {

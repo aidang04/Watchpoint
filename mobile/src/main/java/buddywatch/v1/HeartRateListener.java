@@ -2,8 +2,6 @@ package buddywatch.v1;
 
 import android.util.Log;
 
-import androidx.room.Room;
-
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.WearableListenerService;
 
@@ -11,6 +9,15 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
+
+import buddywatch.v1.dao.ActivityDAO;
+import buddywatch.v1.dao.HeartEventDAO;
+import buddywatch.v1.database.GuideDatabase;
+import buddywatch.v1.model.Activity;
+import buddywatch.v1.model.HeartEvent;
+import buddywatch.v1.util.ErrorHandler;
+import buddywatch.v1.util.GuideDatabaseConnection;
+import buddywatch.v1.util.HeartRateRecord;
 
 public class HeartRateListener extends WearableListenerService {
 

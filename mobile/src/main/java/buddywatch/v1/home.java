@@ -17,7 +17,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
-import androidx.room.Room;
 
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeClient;
@@ -27,6 +26,16 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+
+import buddywatch.v1.dao.ActivityDAO;
+import buddywatch.v1.dao.GuideDAO;
+import buddywatch.v1.dao.HeartEventDAO;
+import buddywatch.v1.database.GuideDatabase;
+import buddywatch.v1.model.Guide;
+import buddywatch.v1.model.HeartEvent;
+import buddywatch.v1.model.HeartEventWithGuideTitle;
+import buddywatch.v1.util.ErrorHandler;
+import buddywatch.v1.util.GuideDatabaseConnection;
 
 public class home extends AppCompatActivity {
 
@@ -42,6 +51,12 @@ public class home extends AppCompatActivity {
         viewHome(db);
 
     }
+
+    /**
+     *
+     * Home Page Methods Start Here.
+     *
+     */
 
     private void viewHome(GuideDatabase db){
 
@@ -99,6 +114,76 @@ public class home extends AppCompatActivity {
         heartCard.setOnClickListener(v -> heartData(db));
 
     }
+
+    private void fillDatabase(GuideDAO gDAO){
+
+        List<Guide> guides = new ArrayList<>();
+        guides.add(new Guide("Test 1","tut1.txt"));
+        guides.add(new Guide("Test 2","tut2.txt"));
+        guides.add(new Guide("Test 3","tut3.txt"));
+        guides.add(new Guide("Test 4","tut4.txt"));
+
+        Thread dbPopulate = new Thread(() -> gDAO.insertAll(guides));
+
+        try{
+            dbPopulate.start();
+            dbPopulate.join();
+        }
+        catch (InterruptedException e){
+            ErrorHandler.handle(e, getApplicationContext(), "Database Error. \n Please contact the maintainer at aidan.gowdy.2022@uni.strath.ac.uk.");
+        }
+
+    }
+
+    private void createDailyBox(GuideDatabase db, LinearLayout addTo, String filepath, String title, int completed){
+
+        Context context = addTo.getContext();
+        DisplayMetrics disp = context.getResources().getDisplayMetrics();
+
+        // Create CardView and set Parameters
+        CardView card = new CardView(context);
+        LinearLayout.LayoutParams cardP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        int margin = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, disp));
+        int padding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 13, disp));
+
+        cardP.setMargins(0,0,0,margin);
+        card.setLayoutParams(cardP);
+        card.setRadius(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, disp));
+
+        // Create TextView and set Parameters
+        TextView textView = new TextView(context);
+        textView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+        textView.setText(title);
+        textView.setTextAlignment(ViewGroup.TEXT_ALIGNMENT_CENTER);
+        textView.setPadding(0, padding, 0, padding);
+
+        // Create CheckBox and set Parameters
+        CheckBox check = new CheckBox(context);
+        FrameLayout.LayoutParams checkP = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        checkP.gravity = Gravity.END;
+        check.setLayoutParams(checkP);
+        check.setClickable(false);
+        check.setChecked(completed > 0);
+
+        // Assemble TextView and CheckBox into CardView
+        card.addView(textView);
+        card.addView(check);
+
+        // Sets a listener on the card which when clicked displays the launch page for the selected guide.
+        card.setOnClickListener(v -> viewGuide(filepath, title, db));
+
+        // Add CardView to parent view
+        addTo.addView(card);
+
+    }
+
+    /**
+     *
+     * Methods for individual guide pages start here.
+     *
+     */
 
     private void viewGuide(String filepath, String name, GuideDatabase db){
 
@@ -185,70 +270,6 @@ public class home extends AppCompatActivity {
         }
     }
 
-    private void fillDatabase(GuideDAO gDAO){
-
-        List<Guide> guides = new ArrayList<>();
-        guides.add(new Guide("Test 1","tut1.txt"));
-        guides.add(new Guide("Test 2","tut2.txt"));
-        guides.add(new Guide("Test 3","tut3.txt"));
-        guides.add(new Guide("Test 4","tut4.txt"));
-
-        Thread dbPopulate = new Thread(() -> gDAO.insertAll(guides));
-
-        try{
-            dbPopulate.start();
-            dbPopulate.join();
-        }
-        catch (InterruptedException e){
-            ErrorHandler.handle(e, getApplicationContext(), "Database Error. \n Please contact the maintainer at aidan.gowdy.2022@uni.strath.ac.uk.");
-        }
-
-    }
-
-    private void createDailyBox(GuideDatabase db, LinearLayout addTo, String filepath, String title, int completed){
-
-        Context context = addTo.getContext();
-        DisplayMetrics disp = context.getResources().getDisplayMetrics();
-
-        // Create CardView and set Parameters
-        CardView card = new CardView(context);
-        LinearLayout.LayoutParams cardP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        int margin = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, disp));
-        int padding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 13, disp));
-
-        cardP.setMargins(0,0,0,margin);
-        card.setLayoutParams(cardP);
-        card.setRadius(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, disp));
-
-        // Create TextView and set Parameters
-        TextView textView = new TextView(context);
-        textView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-
-        textView.setText(title);
-        textView.setTextAlignment(ViewGroup.TEXT_ALIGNMENT_CENTER);
-        textView.setPadding(0, padding, 0, padding);
-
-        // Create CheckBox and set Parameters
-        CheckBox check = new CheckBox(context);
-        FrameLayout.LayoutParams checkP = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        checkP.gravity = Gravity.END;
-        check.setLayoutParams(checkP);
-        check.setClickable(false);
-        check.setChecked(completed > 0);
-
-        // Assemble TextView and CheckBox into CardView
-        card.addView(textView);
-        card.addView(check);
-
-        // Sets a listener on the card which when clicked displays the launch page for the selected guide.
-        card.setOnClickListener(v -> viewGuide(filepath, title, db));
-
-        // Add CardView to parent view
-        addTo.addView(card);
-
-    }
-
     private void sendCommand(String tut) {
 
         NodeClient nodeClient = Wearable.getNodeClient(this);
@@ -262,6 +283,13 @@ public class home extends AppCompatActivity {
         });
     }
 
+    /**
+     *
+     * Heart-Rate Assessment Page Methods Start Here.
+     * The actual logic for heart-rate assessment is done in HeartRateListener.java, then added to the database.
+     *
+     */
+
     private void heartData(GuideDatabase db){
 
         setContentView(R.layout.heart_view);
@@ -270,15 +298,24 @@ public class home extends AppCompatActivity {
         home.setOnClickListener(v -> viewHome(db));
 
         HeartEventDAO hedao = db.hedao();
-        AtomicReference<List<HeartEvent>> atomicHeartEventList = new AtomicReference<>(new ArrayList<>());
+        AtomicReference<List<HeartEventWithGuideTitle>> atomicHeartEventList = new AtomicReference<>(new ArrayList<>());
 
-        Thread dbGetHeartEvents = new Thread(() -> atomicHeartEventList.set(hedao.getAllHeartEvent()));
+        Thread dbGetHeartEvents = new Thread(() -> atomicHeartEventList.set(hedao.getAllHeartEventPlusTitle()));
 
         try{
             dbGetHeartEvents.start();
             dbGetHeartEvents.join();
         } catch (InterruptedException e) {
             ErrorHandler.handle(e, getApplicationContext(), "Database Error. \n Please contact the maintainer at aidan.gowdy.2022@uni.strath.ac.uk.");
+        }
+
+        List<HeartEventWithGuideTitle> HeartEventList = atomicHeartEventList.get();
+        LinearLayout heartContainer = findViewById(R.id.dataContainer);
+
+        for(int i = 0; i < 21; i++){
+
+            createHeartBox(heartContainer,HeartEventList.get(i).title, HeartEventList.get(i).heartEvent.avgBPM, !HeartEventList.get(i).heartEvent.severity.equals("None"));
+
         }
 
     }
