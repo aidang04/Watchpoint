@@ -1,7 +1,12 @@
 package buddywatch.v1.ui;
 
+import static android.view.View.TEXT_ALIGNMENT_CENTER;
+
 import android.content.Context;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.AbsoluteSizeSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -31,6 +36,11 @@ import buddywatch.v1.util.GuideDatabaseConnection;
 public class HeartDataActivity extends AppCompatActivity {
 
     private static final int MAX_HEART_EVENT_TO_DISPLAY = 20;
+    private static final int PADDING = 50;
+    private static final int MARGIN = 5;
+    private static final int TEXT_SIZE_TITLE = 15;
+    private static final int TEXT_SIZE_BPM = 30;
+    private static final int TEXT_SIZE_BPM_EXTRA = 20;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -79,8 +89,8 @@ public class HeartDataActivity extends AppCompatActivity {
         CardView card = new CardView(context);
         LinearLayout.LayoutParams cardP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        int margin = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, disp));
-        int padding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 13, disp));
+        int margin = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, MARGIN, disp));
+        int padding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, PADDING, disp));
 
         cardP.setMargins(0,0,0,margin);
         card.setLayoutParams(cardP);
@@ -91,16 +101,28 @@ public class HeartDataActivity extends AppCompatActivity {
         textView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
         textView.setText(title);
-        textView.setTextAlignment(ViewGroup.TEXT_ALIGNMENT_CENTER);
+        textView.setTextSize(Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, TEXT_SIZE_TITLE, disp)));
+        textView.setTextAlignment(TEXT_ALIGNMENT_CENTER);
         textView.setGravity(Gravity.CENTER);
         textView.setPadding(0, padding, 0, padding);
 
         TextView bpm = new TextView(context);
-        bpm.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-        String bpmToDisplay = event.avgBPM + " bpm";
-        bpm.setText(bpmToDisplay);
-        bpm.setGravity(Gravity.END);
+        FrameLayout.LayoutParams bpmP = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        bpmP.gravity = Gravity.END | Gravity.CENTER_VERTICAL;
+        bpm.setLayoutParams(bpmP);
+
+        String bpmValue = String.valueOf(event.avgBPM);
+
+        // Sets up the BPM string to have different parts of the string be different sizes for a neat display.
+        SpannableString spanBPM = new SpannableString(event.avgBPM + "\n avg. bpm");
+        spanBPM.setSpan(new AbsoluteSizeSpan(TEXT_SIZE_BPM, true), 0, bpmValue.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spanBPM.setSpan(new AbsoluteSizeSpan(TEXT_SIZE_BPM_EXTRA, true), bpmValue.length(), spanBPM.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        bpm.setText(spanBPM);
+        bpm.setTextSize(Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, TEXT_SIZE_BPM, disp)));
+        bpm.setTextColor(ContextCompat.getColor(context, R.color.grey));
+        bpm.setTextAlignment(TEXT_ALIGNMENT_CENTER);
 
         if (!event.severity.equals("None") && !event.addressed){
             card.setCardBackgroundColor(ContextCompat.getColor(context, R.color.red));
