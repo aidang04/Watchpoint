@@ -72,7 +72,7 @@ public class HeartDataActivity extends AppCompatActivity {
 
     private void createHeartBox(LinearLayout addTo, String title, HeartEvent event){
 
-        Context context = addTo.getContext();
+        Context context = HeartDataActivity.this;
         DisplayMetrics disp = context.getResources().getDisplayMetrics();
 
         // Create CardView and set Parameters

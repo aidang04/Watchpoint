@@ -86,7 +86,10 @@ public class Home extends AppCompatActivity {
         for(int i = 0; i < guides.size(); i++) {
             Guide guide = guides.get(i);
 
-            Thread dbCheckCompleted = new Thread(() -> createDailyBox(guideContainer, guide.filepath, guide.guideName, aDAO.checkIfComplete(guide.filepath)));
+            Thread dbCheckCompleted = new Thread(() -> {
+                int completed = aDAO.checkIfComplete(guide.filepath);
+                runOnUiThread(() -> createDailyBox(guideContainer, guide.filepath, guide.guideName, completed));
+            });
 
             try {
                 dbCheckCompleted.start();
@@ -127,7 +130,7 @@ public class Home extends AppCompatActivity {
 
     private void createDailyBox(LinearLayout addTo, String filepath, String title, int completed){
 
-        Context context = addTo.getContext();
+        Context context = Home.this;
         DisplayMetrics disp = context.getResources().getDisplayMetrics();
 
         // Create CardView and set Parameters

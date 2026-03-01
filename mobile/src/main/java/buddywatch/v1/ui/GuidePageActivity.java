@@ -52,23 +52,20 @@ public class GuidePageActivity extends AppCompatActivity {
             dbGetGuide.start();
             dbGetGuide.join();
         } catch (InterruptedException e) {
-            ErrorHandler.handle(e, getApplicationContext(), "Database Error. \n Please contact the maintainer at aidan.gowdy.2022@uni.strath.ac.uk.");
+            ErrorHandler.handle(e, this, "Database Error. \n Please contact the maintainer at aidan.gowdy.2022@uni.strath.ac.uk.");
         }
 
         Guide current = results.get();
 
         // Runs UI updates to customise guide screen to selected guide.
-        runOnUiThread(() -> {
-            title.setText(name);
 
-            if(current.markedDaily){
-                toggleDaily(daily);
-            }
-            if(current.markedFavourite){
-                toggleFav(favourite);
-            }
-
-        });
+        title.setText(name);
+        if(current.markedDaily){
+            toggleDaily(daily);
+        }
+        if(current.markedFavourite){
+            toggleFav(favourite);
+        }
 
         // Sets listener on send button to send filepath for requested guide.
         start.setOnClickListener(v -> sendCommand(filepath));
@@ -91,7 +88,7 @@ public class GuidePageActivity extends AppCompatActivity {
 
     private void toggleFav(ImageView toUpdate){
 
-        if(toUpdate.getTag() == "true"){
+        if(toUpdate.getTag().equals("true")){
             toUpdate.setTag("false");
             toUpdate.setImageResource(R.drawable.unheart);
         }
@@ -105,7 +102,7 @@ public class GuidePageActivity extends AppCompatActivity {
 
     private void toggleDaily(ImageView toUpdate) {
 
-        if(toUpdate.getTag() == "true"){
+        if(toUpdate.getTag().equals("true")){
             toUpdate.setTag("false");
             toUpdate.setImageResource(R.drawable.unsave);
         }
