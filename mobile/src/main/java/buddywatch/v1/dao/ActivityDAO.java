@@ -22,6 +22,9 @@ public interface ActivityDAO {
     @Query("SELECT * FROM Activity WHERE id = :id")
     Activity getActivityById(int id);
 
+    @Query("SELECT dateCompleted FROM Activity WHERE id = :id")
+    Date getDateById(int id);
+
     @Query("SELECT * FROM Activity WHERE dateCompleted = :today")
     List<Activity> getTodaysActivities(Date today);
 

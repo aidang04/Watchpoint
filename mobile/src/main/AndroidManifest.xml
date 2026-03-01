@@ -23,6 +23,7 @@
         </activity>
         <activity android:name=".ui.HeartDataActivity"/>
         <activity android:name=".ui.GuidePageActivity"/>
+        <activity android:name=".ui.ConcernActivity"/>
         <service
             android:name=".util.HeartRateListener"
             android:exported="true">
