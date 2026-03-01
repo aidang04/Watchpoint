@@ -6,11 +6,11 @@
     android:orientation="vertical">
 
     <ImageView
+        android:id="@+id/favourite"
         android:layout_width="0sp"
         android:layout_height="0dp"
         android:contentDescription="@string/unfilledFav"
         android:src="@drawable/unheart"
-        android:id="@+id/favourite"
         android:tag="false"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="@+id/twenty"
@@ -18,11 +18,11 @@
         app:layout_constraintTop_toTopOf="@id/top" />
 
     <ImageView
+        android:id="@+id/daily"
         android:layout_width="0sp"
         android:layout_height="0sp"
         android:contentDescription="@string/unfilledDaily"
         android:src="@drawable/unsave"
-        android:id="@+id/daily"
         android:tag="false"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="@+id/end"
@@ -31,35 +31,35 @@
 
 
     <TextView
+        android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAlignment="center"
         android:text="@string/loading"
+        android:textAlignment="center"
         android:textSize="50sp"
-        android:id="@+id/title"
-        app:layout_constraintBottom_toBottomOf="@id/middle"/>
+        app:layout_constraintBottom_toBottomOf="@id/middle" />
 
     <Button
+        android:id="@+id/send"
         android:layout_width="0sp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/send_tutorial"
-        android:id="@+id/send"
-        app:layout_constraintTop_toTopOf="@id/middle"
+        app:layout_constraintEnd_toEndOf="@id/eighty"
         app:layout_constraintStart_toStartOf="@id/twenty"
-        app:layout_constraintEnd_toEndOf="@id/eighty"/>
+        app:layout_constraintTop_toTopOf="@id/middle" />
 
     <ImageView
+        android:id="@+id/back"
         android:layout_width="0sp"
         android:layout_height="0sp"
-        android:src="@drawable/back"
         android:contentDescription="@string/backButton"
-        android:id="@+id/back"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintStart_toStartOf="@id/zero"
-        app:layout_constraintEnd_toEndOf="@id/twenty"
+        android:src="@drawable/home"
         app:layout_constraintBottom_toBottomOf="@id/bottom"
-        />
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/aboveBack"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/twenty"
@@ -108,7 +108,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.98" />
+        app:layout_constraintGuide_percent="0.975" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/aboveBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.9" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
