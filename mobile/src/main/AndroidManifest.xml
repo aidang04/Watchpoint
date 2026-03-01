@@ -13,7 +13,7 @@
         android:theme="@style/Theme.Buddywatch"
         tools:targetApi="31">
         <activity
-            android:name=".home"
+            android:name=".ui.Home"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,8 +21,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.HeartDataActivity"/>
+        <activity android:name=".ui.GuidePageActivity"/>
         <service
-            android:name=".HeartRateListener"
+            android:name=".util.HeartRateListener"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />

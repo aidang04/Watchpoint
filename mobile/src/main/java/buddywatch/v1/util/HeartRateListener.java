@@ -1,4 +1,4 @@
-package buddywatch.v1;
+package buddywatch.v1.util;
 
 import android.util.Log;
 
@@ -15,9 +15,6 @@ import buddywatch.v1.dao.HeartEventDAO;
 import buddywatch.v1.database.GuideDatabase;
 import buddywatch.v1.model.Activity;
 import buddywatch.v1.model.HeartEvent;
-import buddywatch.v1.util.ErrorHandler;
-import buddywatch.v1.util.GuideDatabaseConnection;
-import buddywatch.v1.util.HeartRateRecord;
 
 public class HeartRateListener extends WearableListenerService {
 

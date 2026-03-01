@@ -6,5 +6,5 @@ public class HeartEventWithGuideTitle {
     @Embedded
     public HeartEvent heartEvent;
 
-    public String title;
+    public String guideName;
 }

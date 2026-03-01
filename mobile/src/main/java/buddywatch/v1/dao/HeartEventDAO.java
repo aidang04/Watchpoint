@@ -18,7 +18,7 @@ public interface HeartEventDAO {
     @Query("SELECT * FROM HeartEvent ORDER BY id DESC")
     List<HeartEvent> getAllHeartEvent();
 
-    @Query("SELECT HeartEvent.*, Guide.guideName FROM HeartEvent INNER JOIN Guide ON HeartEvent.gpath = Guide.filepath")
+    @Query("SELECT HeartEvent.*, Guide.guideName FROM HeartEvent INNER JOIN Guide ON HeartEvent.gPath = Guide.filepath")
     List<HeartEventWithGuideTitle> getAllHeartEventPlusTitle();
 
     @Query("UPDATE HeartEvent SET addressed = TRUE WHERE id = :id")
