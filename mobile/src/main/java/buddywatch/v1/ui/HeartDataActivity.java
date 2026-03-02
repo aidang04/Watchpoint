@@ -9,7 +9,6 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.AbsoluteSizeSpan;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.ViewGroup;
@@ -61,6 +60,9 @@ public class HeartDataActivity extends AppCompatActivity {
             createHeartBox(heartContainer, event.guideName, event.heartEvent);
         }
 
+        HeartEventDAO hedao = db.hedao();
+        findViewById(R.id.deleteData).setOnClickListener(v -> new Thread(hedao::deleteAllData).start());
+
     }
 
     private List<HeartEventWithGuideTitle> fetchHeartEvents(GuideDatabase db){
@@ -93,7 +95,7 @@ public class HeartDataActivity extends AppCompatActivity {
         int margin = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, MARGIN, disp));
         int padding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, PADDING, disp));
 
-        cardP.setMargins(0,0,0,margin);
+        cardP.setMargins(margin, margin, margin, margin);
         card.setLayoutParams(cardP);
         card.setRadius(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, disp));
 
@@ -122,7 +124,6 @@ public class HeartDataActivity extends AppCompatActivity {
         spanBPM.setSpan(new AbsoluteSizeSpan(TEXT_SIZE_BPM_EXTRA, true), bpmValue.length(), spanBPM.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         bpm.setText(spanBPM);
-        bpm.setTextSize(Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, TEXT_SIZE_BPM, disp)));
         bpm.setTextColor(ContextCompat.getColor(context, R.color.grey));
         bpm.setTextAlignment(TEXT_ALIGNMENT_CENTER);
 

@@ -11,6 +11,9 @@
     <string name="dailyTasks">Daily Tasks</string>
     <string name="deleteData">Delete All Heart-rate Data.</string>
     <string name="history">Heart-rate Data History</string>
+    <string name="searchHint">Search…</string>
+    <string name="searchSend">Send</string>
+    <string name="noResults">No Results. \nPlease try a different search.</string>
 
     concern_view Displayed Strings
     <string name="concernDuring">During the guide %s</string>

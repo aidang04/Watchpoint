@@ -22,6 +22,7 @@
         android:id="@+id/heartDataScroller"
         android:layout_width="0sp"
         android:layout_height="0sp"
+        android:background="@drawable/stroke_bg"
         app:layout_constraintBottom_toBottomOf="@id/middle"
         app:layout_constraintEnd_toEndOf="@id/end"
         app:layout_constraintStart_toStartOf="@id/start"
@@ -36,6 +37,7 @@
     </ScrollView>
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/deleteData"
         android:layout_width="0sp"
         android:layout_height="0sp"
         android:layout_margin="10dp"

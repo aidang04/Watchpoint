@@ -28,6 +28,11 @@ import buddywatch.v1.util.GuideDatabaseConnection;
 
 public class Home extends AppCompatActivity {
 
+    private static final int PADDING = 13;
+    private static final int MARGIN_UP_DOWN = 5;
+    private static final int MARGIN_LEFT_RIGHT = 10;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,8 +88,7 @@ public class Home extends AppCompatActivity {
         LinearLayout guideContainer = findViewById(R.id.guides);
 
         // Loops through all guides and adds them to the UI.
-        for(int i = 0; i < guides.size(); i++) {
-            Guide guide = guides.get(i);
+        for(Guide guide : guides) {
 
             Thread dbCheckCompleted = new Thread(() -> {
                 int completed = aDAO.checkIfComplete(guide.filepath);
@@ -103,6 +107,12 @@ public class Home extends AppCompatActivity {
         CardView heartCard = findViewById(R.id.heartRate);
         heartCard.setOnClickListener(v -> {
             Intent intent = new Intent(this, HeartDataActivity.class);
+            startActivity(intent);
+        });
+
+        CardView guideCard = findViewById(R.id.allGuides);
+        guideCard.setOnClickListener(v -> {
+            Intent intent =  new Intent(this, AllGuidesActivity.class);
             startActivity(intent);
         });
 
@@ -137,10 +147,11 @@ public class Home extends AppCompatActivity {
         CardView card = new CardView(context);
         LinearLayout.LayoutParams cardP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        int margin = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, disp));
-        int padding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 13, disp));
+        int margin_up_down = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, MARGIN_UP_DOWN, disp));
+        int margin_left_right = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, MARGIN_LEFT_RIGHT, disp));
+        int padding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, PADDING, disp));
 
-        cardP.setMargins(0,0,0,margin);
+        cardP.setMargins(margin_left_right, margin_up_down, margin_left_right, margin_up_down);
         card.setLayoutParams(cardP);
         card.setRadius(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, disp));
 

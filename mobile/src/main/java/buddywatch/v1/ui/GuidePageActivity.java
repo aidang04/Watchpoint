@@ -29,7 +29,7 @@ public class GuidePageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.guideview);
+        setContentView(R.layout.guide_view);
         GuideDatabase db = GuideDatabaseConnection.getInstance(getApplicationContext()).getDb();
 
         String filepath = getIntent().getStringExtra("filepath");

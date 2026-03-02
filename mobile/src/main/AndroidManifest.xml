@@ -24,6 +24,7 @@
         <activity android:name=".ui.HeartDataActivity"/>
         <activity android:name=".ui.GuidePageActivity"/>
         <activity android:name=".ui.ConcernActivity"/>
+        <activity android:name=".ui.AllGuidesActivity"/>
         <service
             android:name=".util.HeartRateListener"
             android:exported="true">

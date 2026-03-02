@@ -39,6 +39,9 @@ public interface GuideDAO {
     @Query("UPDATE Guide SET markedDaily = NOT markedDaily WHERE filepath = :fpath")
     void toggleDaily(String fpath);
 
+    @Query("SELECT * FROM GUIDE WHERE LOWER(guideName) LIKE LOWER('%' || :searchFor || '%')")
+    List<Guide> searchAll(String searchFor);
+
     @Query("SELECT markedFavourite FROM Guide WHERE filepath = :fpath")
     Boolean isFavourite(String fpath);
 
