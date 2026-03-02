@@ -59,6 +59,10 @@ public class AllGuidesActivity extends AppCompatActivity {
 
         EditText searchBox = findViewById(R.id.search);
 
+        findViewById(R.id.reset).setOnClickListener(v -> {
+            displayGuides(atomicGuideList.get());
+            searchBox.setText(getText(R.string.empty));
+        });
         findViewById(R.id.home).setOnClickListener(v -> finish());
         findViewById(R.id.send).setOnClickListener(v -> displayGuides(searchGuides(gdao, searchBox.getText().toString())));
 
