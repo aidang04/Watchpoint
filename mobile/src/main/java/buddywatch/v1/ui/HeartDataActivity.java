@@ -51,6 +51,20 @@ public class HeartDataActivity extends AppCompatActivity {
         ImageView home = findViewById(R.id.home);
         home.setOnClickListener(v -> finish());
 
+        HeartEventDAO hedao = db.hedao();
+        findViewById(R.id.deleteData).setOnClickListener(v -> new Thread(hedao::deleteAllData).start());
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        GuideDatabase db = GuideDatabaseConnection.getInstance(getApplicationContext()).getDb();
+        fillHeartEvents(db);
+    }
+
+    private void fillHeartEvents(GuideDatabase db){
+
         List<HeartEventWithGuideTitle> heartEvents = fetchHeartEvents(db);
         LinearLayout heartContainer = findViewById(R.id.dataContainer);
 
@@ -59,10 +73,6 @@ public class HeartDataActivity extends AppCompatActivity {
             HeartEventWithGuideTitle event = heartEvents.get(i);
             createHeartBox(heartContainer, event.guideName, event.heartEvent);
         }
-
-        HeartEventDAO hedao = db.hedao();
-        findViewById(R.id.deleteData).setOnClickListener(v -> new Thread(hedao::deleteAllData).start());
-
     }
 
     private List<HeartEventWithGuideTitle> fetchHeartEvents(GuideDatabase db){
