@@ -41,6 +41,10 @@ public class HeartDataActivity extends AppCompatActivity {
     private static final int TEXT_SIZE_TITLE = 15;
     private static final int TEXT_SIZE_BPM = 30;
     private static final int TEXT_SIZE_BPM_EXTRA = 20;
+    private static final int CARD_RADIUS = 8;
+    private static final int WAIT_MILLIS_FOR_DELETE = 2000;
+    private boolean awaiting = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -51,11 +55,7 @@ public class HeartDataActivity extends AppCompatActivity {
         ImageView home = findViewById(R.id.home);
         home.setOnClickListener(v -> finish());
 
-        HeartEventDAO hedao = db.hedao();
-        findViewById(R.id.deleteData).setOnClickListener(v -> new Thread(() -> {
-                hedao.deleteAllData();
-                runOnUiThread(() -> fillHeartEvents(db));
-        }).start());
+        findViewById(R.id.deleteData).setOnClickListener(v -> handleDelete(db));
 
     }
 
@@ -64,6 +64,42 @@ public class HeartDataActivity extends AppCompatActivity {
         super.onResume();
         GuideDatabase db = GuideDatabaseConnection.getInstance(getApplicationContext()).getDb();
         fillHeartEvents(db);
+    }
+
+    private void handleDelete(GuideDatabase db){
+
+        awaiting = true;
+
+        CardView deleteCard = findViewById(R.id.deleteData);
+        TextView deleteText = findViewById(R.id.deleteText);
+
+        deleteText.setText(R.string.deleteCheck);
+        deleteCard.setOnClickListener(v -> {
+
+            awaiting = false;
+            new Thread(() -> {
+                db.hedao().deleteAllData();
+                runOnUiThread(() -> {
+                    fillHeartEvents(db);
+                    deleteText.setText(R.string.deleteComplete);
+
+                    deleteCard.postDelayed(() -> {
+                        deleteText.setText(R.string.deleteData);
+                        deleteCard.setOnClickListener(v2 -> handleDelete(db));
+                    }, WAIT_MILLIS_FOR_DELETE);
+
+                });
+            }).start();
+        });
+
+            deleteCard.postDelayed(() -> {
+                if(awaiting){
+                    awaiting = false;
+                    deleteText.setText(R.string.deleteData);
+                    deleteCard.setOnClickListener(v3 -> handleDelete(db));
+                }
+            }, WAIT_MILLIS_FOR_DELETE);
+
     }
 
     private void fillHeartEvents(GuideDatabase db){
@@ -111,14 +147,14 @@ public class HeartDataActivity extends AppCompatActivity {
 
         cardP.setMargins(margin, margin, margin, margin);
         card.setLayoutParams(cardP);
-        card.setRadius(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, disp));
+        card.setRadius(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, CARD_RADIUS, disp));
 
         // Create TextView and set Parameters
         TextView textView = new TextView(context);
         textView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
         textView.setText(title);
-        textView.setTextSize(Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, TEXT_SIZE_TITLE, disp)));
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, TEXT_SIZE_TITLE);
         textView.setTextAlignment(TEXT_ALIGNMENT_CENTER);
         textView.setGravity(Gravity.CENTER);
         textView.setPadding(0, padding, 0, padding);

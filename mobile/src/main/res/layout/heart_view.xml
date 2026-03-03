@@ -64,12 +64,14 @@
                 app:layout_constraintDimensionRatio="1:1"/>
 
             <TextView
+                android:id="@+id/deleteText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/deleteData"
                 android:textSize="30sp"
                 android:textColor="@color/white"
                 android:textStyle="bold"
+                android:textAlignment="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/middleDelete" />

@@ -6,11 +6,13 @@
     Displayed Strings
     <string name="empty"/>
     <string name="send_tutorial">Start Guide on Watch</string>
-    <string name="welcome">Welcome to Watchpoint.</string>
+    <string name="welcome">Welcome to Watchpoint</string>
     <string name="allGuides">View All Guides.</string>
     <string name="heartRate">View Health Info.</string>
     <string name="dailyTasks">Daily Tasks</string>
     <string name="deleteData">Delete All Heart-rate Data.</string>
+    <string name="deleteCheck">Are you sure?</string>
+    <string name="deleteComplete">All Heart-rate Data Deleted.</string>
     <string name="history">Heart-rate Data History</string>
     <string name="searchHint">Search…</string>
     <string name="searchSend">Search</string>
