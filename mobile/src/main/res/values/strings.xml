@@ -18,6 +18,7 @@
     <string name="searchSend">Search</string>
     <string name="noResults">No Results. \nPlease try a different search.</string>
     <string name="reset">Reset</string>
+    <string name="restingTest">Start Resting Heart-Rate Tracking on Watch.</string>
 
     concern_view Displayed Strings
     <string name="concernDuring">During the guide %s</string>

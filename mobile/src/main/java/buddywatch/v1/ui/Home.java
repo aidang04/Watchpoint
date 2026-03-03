@@ -9,9 +9,11 @@ import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import java.util.ArrayList;
@@ -80,6 +82,8 @@ public class Home extends AppCompatActivity {
             Intent intent =  new Intent(this, AllGuidesActivity.class);
             startActivity(intent);
         });
+
+        findViewById(R.id.settings).setOnClickListener(v -> callSettings());
     }
 
     private void fillDatabase(GuideDAO gDAO){
@@ -101,24 +105,18 @@ public class Home extends AppCompatActivity {
         }
     }
 
-    private void fillDailyTasks(GuideDatabase db){
+    private void fillDailyTasks(GuideDatabase db) {
 
-        // Prepares atomic reference object.
-        AtomicReference<List<Guide>> atomicGuides = new AtomicReference<>(new ArrayList<>());
+        new Thread(() -> {
+            List<Guide> guides = db.gdao().getDailys();
 
-        // Uses atomic object to store all guides.
-        Thread dbGetDailyGuides = new Thread(() -> atomicGuides.set(db.gdao().getDailys()));
+            runOnUiThread(() -> updateUI(db, guides));
 
-        try{
-            // Returns a list of all guides.
-            dbGetDailyGuides.start();
-            dbGetDailyGuides.join();
+        }).start();
 
-        } catch (InterruptedException e) {
-            ErrorHandler.handle(e, getApplicationContext(), "Database Error. \n Please contact the maintainer at aidan.gowdy.2022@uni.strath.ac.uk.");
-        }
+    }
 
-        List<Guide> guides = atomicGuides.get();
+    private void updateUI(GuideDatabase db, List<Guide> guides){
 
         LinearLayout guideContainer = findViewById(R.id.guides);
         guideContainer.removeAllViews();
@@ -151,11 +149,11 @@ public class Home extends AppCompatActivity {
         CardView card = new CardView(context);
         LinearLayout.LayoutParams cardP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        int marginUpDown = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, MARGIN_UP_DOWN, disp));
+        int margin_up_down = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, MARGIN_UP_DOWN, disp));
         int marginLeftRight = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, MARGIN_LEFT_RIGHT, disp));
         int padding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, PADDING, disp));
 
-        cardP.setMargins(marginLeftRight, marginUpDown, marginLeftRight, marginUpDown);
+        cardP.setMargins(marginLeftRight, margin_up_down, marginLeftRight, margin_up_down);
         card.setLayoutParams(cardP);
         card.setRadius(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, disp));
 
@@ -189,6 +187,16 @@ public class Home extends AppCompatActivity {
 
         // Add CardView to parent view
         return card;
+
+    }
+
+    private void callSettings(){
+
+        AlertDialog.Builder build = new AlertDialog.Builder(this);
+        build.setView(R.layout.settings_sheet);
+
+        AlertDialog dialog = build.create();
+        dialog.show();
 
     }
 
