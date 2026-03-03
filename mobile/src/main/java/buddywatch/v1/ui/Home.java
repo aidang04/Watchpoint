@@ -39,24 +39,22 @@ public class Home extends AppCompatActivity {
 
         // Calls a singleton GuideDatabase instance.
         GuideDatabase db = GuideDatabaseConnection.getInstance(getApplicationContext()).getDb();
-
         viewHome(db);
-
     }
 
-    /**
-     *
-     * Home Page Methods Start Here.
-     *
-     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        GuideDatabase db = GuideDatabaseConnection.getInstance(getApplicationContext()).getDb();
+        fillDailyTasks(db);
+    }
 
     private void viewHome(GuideDatabase db){
 
         setContentView(R.layout.activity_main);
 
-        // Creates data access objects to interact with Guide table.
+        // Creates a data access object to interact with Guide table.
         GuideDAO gDAO = db.gdao();
-        ActivityDAO aDAO = db.adao();
 
         Thread dbCheckDatabase = new Thread(() -> {
             if(gDAO.countGuides() == 0){
@@ -64,44 +62,12 @@ public class Home extends AppCompatActivity {
             }
         });
 
-        // Prepares atomic reference object.
-        AtomicReference<List<Guide>> atomicGuides = new AtomicReference<>(new ArrayList<>());
-
-        // Uses atomic object to store all guides.
-        Thread dbGetAllGuides = new Thread(() -> atomicGuides.set(gDAO.getAllGuides()));
-
         try{
             // Checks if database is empty, if so, fills with guides.
             dbCheckDatabase.start();
             dbCheckDatabase.join();
-
-            // Returns a list of all guides.
-            dbGetAllGuides.start();
-            dbGetAllGuides.join();
         } catch (InterruptedException e) {
             ErrorHandler.handle(e, getApplicationContext(), "Database Error. \n Please contact the maintainer at aidan.gowdy.2022@uni.strath.ac.uk.");
-        }
-
-        // Passes atomic object into actual object for use.
-        List<Guide> guides = atomicGuides.get();
-
-        LinearLayout guideContainer = findViewById(R.id.guides);
-
-        // Loops through all guides and adds them to the UI.
-        for(Guide guide : guides) {
-
-            Thread dbCheckCompleted = new Thread(() -> {
-                int completed = aDAO.checkIfComplete(guide.filepath);
-                runOnUiThread(() -> createDailyBox(guideContainer, guide.filepath, guide.guideName, completed));
-            });
-
-            try {
-                dbCheckCompleted.start();
-                dbCheckCompleted.join();
-            }catch (InterruptedException e){
-                throw new RuntimeException();
-            }
-
         }
 
         CardView heartCard = findViewById(R.id.heartRate);
@@ -115,7 +81,6 @@ public class Home extends AppCompatActivity {
             Intent intent =  new Intent(this, AllGuidesActivity.class);
             startActivity(intent);
         });
-
     }
 
     private void fillDatabase(GuideDAO gDAO){
@@ -135,10 +100,50 @@ public class Home extends AppCompatActivity {
         catch (InterruptedException e){
             ErrorHandler.handle(e, getApplicationContext(), "Database Error. \n Please contact the maintainer at aidan.gowdy.2022@uni.strath.ac.uk.");
         }
+    }
+
+    private void fillDailyTasks(GuideDatabase db){
+
+        // Prepares atomic reference object.
+        AtomicReference<List<Guide>> atomicGuides = new AtomicReference<>(new ArrayList<>());
+
+        // Uses atomic object to store all guides.
+        Thread dbGetDailyGuides = new Thread(() -> atomicGuides.set(db.gdao().getDailys()));
+
+        try{
+            // Returns a list of all guides.
+            dbGetDailyGuides.start();
+            dbGetDailyGuides.join();
+
+        } catch (InterruptedException e) {
+            ErrorHandler.handle(e, getApplicationContext(), "Database Error. \n Please contact the maintainer at aidan.gowdy.2022@uni.strath.ac.uk.");
+        }
+
+        List<Guide> guides = atomicGuides.get();
+
+        LinearLayout guideContainer = findViewById(R.id.guides);
+        guideContainer.removeAllViews();
+
+        // Loops through all guides and adds them to the UI.
+        for(Guide guide : guides) {
+
+            Thread dbCheckCompleted = new Thread(() -> {
+                int completed = db.adao().checkIfComplete(guide.filepath);
+                runOnUiThread(() -> guideContainer.addView(createDailyBox(guide.filepath, guide.guideName, completed)));
+            });
+
+            try {
+                dbCheckCompleted.start();
+                dbCheckCompleted.join();
+            }catch (InterruptedException e){
+                ErrorHandler.handle(e, this, "Database Error. \nPlease contact the maintainer at aidan.gowdy.2022@uni.strath.ac.uk.");
+            }
+
+        }
 
     }
 
-    private void createDailyBox(LinearLayout addTo, String filepath, String title, int completed){
+    private CardView createDailyBox(String filepath, String title, int completed){
 
         Context context = Home.this;
         DisplayMetrics disp = context.getResources().getDisplayMetrics();
@@ -184,7 +189,7 @@ public class Home extends AppCompatActivity {
         });
 
         // Add CardView to parent view
-        addTo.addView(card);
+        return card;
 
     }
 

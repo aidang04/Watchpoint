@@ -24,7 +24,7 @@ public interface GuideDAO {
     @Query("SELECT * FROM Guide WHERE filepath = :fpath")
     Guide getGuideByFilepath(String fpath);
 
-    @Query("SELECT * FROM Guide")
+    @Query("SELECT * FROM Guide ORDER BY markedFavourite DESC")
     List<Guide> getAllGuides();
 
     @Query("SELECT * FROM Guide WHERE markedFavourite = TRUE")

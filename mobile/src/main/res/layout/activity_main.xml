@@ -8,12 +8,27 @@
     android:orientation="vertical"
     tools:context=".ui.Home">
 
+    <TextView
+        android:id="@+id/dailyText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="@string/dailyTasks"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="@id/top"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/dailyScroll"
+        />
+
     <ScrollView
+        android:id="@+id/dailyScroll"
         android:layout_width="0sp"
         android:layout_height="0sp"
         android:background="@drawable/stroke_bg"
         app:layout_constraintBottom_toBottomOf="@id/middle"
-        app:layout_constraintTop_toTopOf="@id/top"
+        app:layout_constraintTop_toBottomOf="@id/dailyText"
         app:layout_constraintStart_toStartOf="@id/start"
         app:layout_constraintEnd_toEndOf="@id/end">
 
@@ -21,18 +36,7 @@
             android:id="@+id/guides"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:text="@string/dailyTasks"
-                android:textSize="20sp"
-                android:background="@drawable/stroke_bg"
-                />
-
-        </LinearLayout>
+            android:orientation="vertical"/>
 
     </ScrollView>
 
