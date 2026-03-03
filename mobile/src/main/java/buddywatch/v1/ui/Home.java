@@ -9,7 +9,6 @@ import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -18,10 +17,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 import buddywatch.v1.R;
-import buddywatch.v1.dao.ActivityDAO;
 import buddywatch.v1.dao.GuideDAO;
 import buddywatch.v1.database.GuideDatabase;
 import buddywatch.v1.model.Guide;
