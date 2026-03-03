@@ -75,7 +75,7 @@ public class AllGuidesActivity extends AppCompatActivity {
 
         if(guides.isEmpty()){
 
-            TextView noResults = new TextView(getApplicationContext());
+            TextView noResults = new TextView(AllGuidesActivity.this);
             LinearLayout.LayoutParams textP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             textP.gravity = Gravity.CENTER_VERTICAL;
             noResults.setLayoutParams(textP);
@@ -100,15 +100,15 @@ public class AllGuidesActivity extends AppCompatActivity {
 
     private CardView createGuideBox(Guide guide){
 
-        Context context = getApplicationContext();
+        Context context = AllGuidesActivity.this;
         DisplayMetrics disp = context.getResources().getDisplayMetrics();
 
         // Create CardView and set Parameters
         CardView card = new CardView(context);
         LinearLayout.LayoutParams cardP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        int margin = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, MARGIN, disp));
-        int padding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, PADDING, disp));
+        int margin = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, MARGIN, disp));
+        int padding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, PADDING, disp));
 
         cardP.setMargins(0,0,0,margin);
         card.setLayoutParams(cardP);
@@ -119,7 +119,7 @@ public class AllGuidesActivity extends AppCompatActivity {
         textView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
         textView.setText(guide.guideName);
-        textView.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, TEXT_SIZE, disp));
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, TEXT_SIZE);
         textView.setTextAlignment(TEXT_ALIGNMENT_CENTER);
         textView.setPadding(0, padding, 0, padding);
 

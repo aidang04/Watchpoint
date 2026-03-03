@@ -52,7 +52,10 @@ public class HeartDataActivity extends AppCompatActivity {
         home.setOnClickListener(v -> finish());
 
         HeartEventDAO hedao = db.hedao();
-        findViewById(R.id.deleteData).setOnClickListener(v -> new Thread(hedao::deleteAllData).start());
+        findViewById(R.id.deleteData).setOnClickListener(v -> new Thread(() -> {
+                hedao.deleteAllData();
+                runOnUiThread(() -> fillHeartEvents(db));
+        }).start());
 
     }
 
@@ -67,6 +70,7 @@ public class HeartDataActivity extends AppCompatActivity {
 
         List<HeartEventWithGuideTitle> heartEvents = fetchHeartEvents(db);
         LinearLayout heartContainer = findViewById(R.id.dataContainer);
+        heartContainer.removeAllViews();
 
         int limit = Math.min(MAX_HEART_EVENT_TO_DISPLAY, heartEvents.size());
         for(int i = 0; i < limit; i++){

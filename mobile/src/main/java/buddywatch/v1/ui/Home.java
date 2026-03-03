@@ -36,6 +36,7 @@ public class Home extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
         // Calls a singleton GuideDatabase instance.
         GuideDatabase db = GuideDatabaseConnection.getInstance(getApplicationContext()).getDb();
@@ -50,8 +51,6 @@ public class Home extends AppCompatActivity {
     }
 
     private void viewHome(GuideDatabase db){
-
-        setContentView(R.layout.activity_main);
 
         // Creates a data access object to interact with Guide table.
         GuideDAO gDAO = db.gdao();
@@ -136,7 +135,7 @@ public class Home extends AppCompatActivity {
                 dbCheckCompleted.start();
                 dbCheckCompleted.join();
             }catch (InterruptedException e){
-                ErrorHandler.handle(e, this, "Database Error. \nPlease contact the maintainer at aidan.gowdy.2022@uni.strath.ac.uk.");
+                ErrorHandler.handle(e, getApplicationContext(), "Database Error. \nPlease contact the maintainer at aidan.gowdy.2022@uni.strath.ac.uk.");
             }
 
         }
@@ -152,11 +151,11 @@ public class Home extends AppCompatActivity {
         CardView card = new CardView(context);
         LinearLayout.LayoutParams cardP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        int margin_up_down = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, MARGIN_UP_DOWN, disp));
-        int margin_left_right = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, MARGIN_LEFT_RIGHT, disp));
+        int marginUpDown = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, MARGIN_UP_DOWN, disp));
+        int marginLeftRight = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, MARGIN_LEFT_RIGHT, disp));
         int padding = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, PADDING, disp));
 
-        cardP.setMargins(margin_left_right, margin_up_down, margin_left_right, margin_up_down);
+        cardP.setMargins(marginLeftRight, marginUpDown, marginLeftRight, marginUpDown);
         card.setLayoutParams(cardP);
         card.setRadius(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, disp));
 
