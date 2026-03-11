@@ -39,7 +39,7 @@
         </activity>
 
         <activity
-            android:name="buddywatch.v1.presentation.tutorialHandler"
+            android:name="buddywatch.v1.presentation.TutorialHandler"
             android:launchMode="singleTop"
             android:noHistory="true"
             android:theme="@style/MainActivityTheme.Starting"

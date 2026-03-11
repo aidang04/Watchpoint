@@ -10,6 +10,7 @@
     <string name ="welcome">Welcome to the app! \nTutorials will appear here when sent from the partner app!</string>
     <string name ="bpm">%1$d bpm</string>
     <string name ="fileError">Error reading file.</string>
+    <string name ="stopResting">Stop</string>
 
     Placeholders
     <string name="loading">Now Loading…</string>

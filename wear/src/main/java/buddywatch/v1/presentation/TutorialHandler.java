@@ -34,7 +34,7 @@ import java.io.InputStreamReader;
 
 import buddywatch.v1.R;
 
-public class tutorialHandler extends Activity {
+public class TutorialHandler extends Activity {
 
     MeasureCallback  callback;
     MeasureClient mClient;
