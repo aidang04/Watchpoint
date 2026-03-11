@@ -79,6 +79,7 @@ public class HeartDataActivity extends AppCompatActivity {
             awaiting = false;
             new Thread(() -> {
                 db.hedao().deleteAllData();
+                db.rhdao().deleteAllData();
                 runOnUiThread(() -> {
                     fillHeartEvents(db);
                     deleteText.setText(R.string.deleteComplete);

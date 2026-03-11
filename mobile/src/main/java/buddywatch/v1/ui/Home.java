@@ -7,14 +7,21 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeClient;
+import com.google.android.gms.wearable.Wearable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +37,7 @@ public class Home extends AppCompatActivity {
     private static final int PADDING = 13;
     private static final int MARGIN_UP_DOWN = 5;
     private static final int MARGIN_LEFT_RIGHT = 10;
+    private static final String START_RESTING = "/trigger_resting";
 
 
     @Override
@@ -194,6 +202,42 @@ public class Home extends AppCompatActivity {
 
         AlertDialog dialog = build.create();
         dialog.show();
+
+        findViewById(R.id.start).setOnClickListener(v -> startRestingSession());
+        findViewById(R.id.deleteGuideData).setOnClickListener(v -> deleteData("Guide"));
+        findViewById(R.id.deleteResting).setOnClickListener(v -> deleteData("Resting"));
+
+    }
+
+    private void startRestingSession(){
+
+        NodeClient nodeClient = Wearable.getNodeClient(this);
+        nodeClient.getConnectedNodes().addOnSuccessListener(nodes -> {
+            for(Node n : nodes){
+                Wearable.getMessageClient(this).sendMessage(n.getId(), START_RESTING, null);
+            }
+        });
+
+    }
+
+    private void deleteData(String toDelete){
+
+        GuideDatabase db = GuideDatabaseConnection.getInstance(this).getDb();
+
+        if(toDelete.equals("Resting")){
+
+            Thread dbDeleteData = new Thread(() -> db.rhdao().deleteAllData());
+            dbDeleteData.start();
+
+        }
+        else if(toDelete.equals("Guide")){
+
+            Thread dbDeleteData = new Thread(() -> db.hedao().deleteAllData());
+            dbDeleteData.start();
+
+        }
+
+        Toast.makeText(this, "All " + toDelete + " data successfully deleted.", Toast.LENGTH_SHORT).show();
 
     }
 

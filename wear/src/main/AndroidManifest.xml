@@ -43,9 +43,14 @@
             android:launchMode="singleTop"
             android:noHistory="true"
             android:theme="@style/MainActivityTheme.Starting"
-            android:excludeFromRecents="true">
-        </activity>
+            android:excludeFromRecents="true"/>
 
+        <activity
+            android:name=".presentation.RestingHeartRateListener"
+            android:launchMode="singleTop"
+            android:noHistory="true"
+            android:theme="@style/MainActivityTheme.Starting"
+            android:excludeFromRecents="true"/>
 
     <service
             android:name="buddywatch.v1.presentation.Listener"

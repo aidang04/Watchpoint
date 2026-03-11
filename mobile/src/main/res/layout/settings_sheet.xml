@@ -6,12 +6,31 @@
     android:padding="16dp">
 
     <Button
+        android:id="@+id/start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/restingTest"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toTopOf="@id/deleteResting"/>
+
+    <Button
+        android:id="@+id/deleteResting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/restingDelete"
+        app:layout_constraintTop_toBottomOf="@id/start"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <Button
+        android:id="@+id/deleteGuideData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/guideDelete"
+        app:layout_constraintTop_toBottomOf="@id/deleteResting"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
