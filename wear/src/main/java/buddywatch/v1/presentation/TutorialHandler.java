@@ -34,8 +34,9 @@ import java.io.InputStreamReader;
 
 import buddywatch.v1.R;
 
-public class TutorialHandler extends Activity {
+public class TutorialHandler extends Activity implements HeartRateManager.HeartRateListener {
 
+    private HeartRateManager heartRateManager;
     MeasureCallback  callback;
     MeasureClient mClient;
     int curLine;
@@ -61,8 +62,8 @@ public class TutorialHandler extends Activity {
 
         if (checkSelfPermission(android.Manifest.permission.BODY_SENSORS)
                 == PackageManager.PERMISSION_GRANTED) {
-            trackHeartrate();
-
+            heartRateManager = new HeartRateManager(this, this);
+            heartRateManager.startTracking();
             startTut(filename);
         }
         else
@@ -121,7 +122,8 @@ public class TutorialHandler extends Activity {
         if (requestCode == 1001){
             if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
 
-                trackHeartrate();
+                heartRateManager = new HeartRateManager(this, this);
+                heartRateManager.startTracking();
 
                 startTut(getIntent().getStringExtra("TUTORIAL_PATH"));
             }
@@ -133,38 +135,9 @@ public class TutorialHandler extends Activity {
         }
     }
 
-    public void trackHeartrate(){
-
-        HealthServicesClient hClient = HealthServices.getClient(this);
-        mClient = hClient.getMeasureClient();
-        Resources res = getResources();
-
-        callback = new MeasureCallback() {
-            @Override
-            public void onAvailabilityChanged(@NonNull DeltaDataType<?, ?> deltaDataType, @NonNull Availability availability) {
-                Log.d("tutorialHandler", "The availability has changed.");
-            }
-
-            @Override
-            public void onDataReceived(DataPointContainer dataPointContainer) {
-
-                for(SampleDataPoint<Double> dp : dataPointContainer.getData(DataType.HEART_RATE_BPM)){
-
-                    recorder.add(new HeartRateRecord(System.currentTimeMillis(), dp.getValue()));
-                    runOnUiThread(() -> bpmView.setText(res.getString(R.string.bpm, dp.getValue().intValue())));
-
-                }
-
-            }
-        };
-
-        mClient.registerMeasureCallback(DataType.HEART_RATE_BPM, callback);
-
-    }
-
     public void stopTracking(){
         if(mClient != null && callback != null){
-             mClient.unregisterMeasureCallbackAsync(DataType.HEART_RATE_BPM, callback);
+            heartRateManager.stopTracking();
              Log.d("Debug", "got to stoptracking.");
              sendData();
         }
@@ -200,7 +173,7 @@ public class TutorialHandler extends Activity {
         buffer.put(pathPayload);
 
         // Loops through recorder and adds each element to the buffer.
-        for(HeartRateRecord r : recorder){
+        for(HeartRateRecord r : heartRateManager.getRecorder()){
             buffer.putLong(r.timestamp);
             buffer.putDouble(r.bpm);
         }
@@ -214,6 +187,11 @@ public class TutorialHandler extends Activity {
             }
         }).addOnFailureListener(e -> Log.d("Debug", "didnt send"));
 
+    }
+
+    @Override
+    public void onHeartRateUpdate(int bpm){
+        runOnUiThread(() -> bpmView.setText(getResources().getString(R.string.bpm, bpm)));
     }
 
 }

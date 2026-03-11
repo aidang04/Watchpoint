@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey;
 public class RestingHeart {
 
     @PrimaryKey(autoGenerate = true)
-    int id;
-    int avgBPM;
-    int secondsElapsed;
+    public int id;
+    public int avgBPM;
+    public int secondsElapsed;
 }

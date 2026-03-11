@@ -29,6 +29,7 @@ public class RestingHeartRateListener extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_resting);
 
         // TODO: Finish
 
@@ -56,6 +57,8 @@ public class RestingHeartRateListener extends Activity {
     };
 
         mClient.registerMeasureCallback(DataType.HEART_RATE_BPM, callback);
+
+
 
 }
 

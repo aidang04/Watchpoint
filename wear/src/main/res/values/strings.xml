@@ -15,4 +15,5 @@
     Placeholders
     <string name="loading">Now Loading…</string>
     <string name ="loadBPM">-- bpm</string>
+    <string name ="secondsElapsed">$s s</string>
 </resources>
