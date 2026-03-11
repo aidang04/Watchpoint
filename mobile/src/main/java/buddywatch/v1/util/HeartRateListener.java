@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import buddywatch.v1.dao.ActivityDAO;
 import buddywatch.v1.dao.HeartEventDAO;
+import buddywatch.v1.dao.RestingHeartDAO;
 import buddywatch.v1.database.GuideDatabase;
 import buddywatch.v1.model.Activity;
 import buddywatch.v1.model.HeartEvent;
@@ -26,7 +27,7 @@ public class HeartRateListener extends WearableListenerService {
 
         GuideDatabase db = GuideDatabaseConnection.getInstance(getApplicationContext()).getDb();
 
-        if(msgEvent.getPath().equals("/guide_data")){
+        if(msgEvent.getPath().equals("/guide_data")) {
 
             byte[] payload = msgEvent.getData();
             ByteBuffer buffer = ByteBuffer.wrap(payload);
@@ -37,7 +38,7 @@ public class HeartRateListener extends WearableListenerService {
             String path = new String(pathPayload, StandardCharsets.UTF_8);
 
             ArrayList<HeartRateRecord> records = new ArrayList<>();
-            while(buffer.hasRemaining()){
+            while (buffer.hasRemaining()) {
                 // gets timestamp in seconds
                 long timestamp = buffer.getLong() / 1000;
                 double bpm = buffer.getDouble();
@@ -46,24 +47,23 @@ public class HeartRateListener extends WearableListenerService {
             }
 
             ActivityDAO adao = db.adao();
+            RestingHeartDAO rhdao = db.rhdao();
             Thread dbInsertActivity = new Thread(() -> {
                 adao.insertActivity(new Activity(path, Date.valueOf(LocalDate.now().toString())));
-                assessHeartrate(records, db);
+
+                float averageResting = rhdao.getAverageBPM();
+
+                // Checks if averageResting has anything in it. If it does, uses that, if it doesn't gets the average bpm from the session.
+                double baseline = averageResting > 0 ? averageResting : records.stream().mapToDouble(r -> r.bpm).average().orElse(0);
+
+                assessHeartRate(records, db, baseline);
             });
 
-            try{
-                dbInsertActivity.start();
-                dbInsertActivity.join();
-            } catch (InterruptedException e) {
-                ErrorHandler.handle(e, getApplicationContext(), "Database Error. \n Please contact the maintainer at aidan.gowdy.2022@uni.strath.ac.uk.");
-            }
+            dbInsertActivity.start();
         }
-
     }
 
-    private void assessHeartrate(ArrayList<HeartRateRecord> records, GuideDatabase db){
-
-        // TODO: Maybe integrate a method that gets the users resting heart-rate by tracking it outside of guides?
+    private void assessHeartRate(ArrayList<HeartRateRecord> records, GuideDatabase db, double average){
 
         // Thresholds of stress, relative to resting heart-rate multiplied by each variable.
         final double MILD_STRESS = 1.1;         // 10 % increase
@@ -77,16 +77,6 @@ public class HeartRateListener extends WearableListenerService {
 
         String severity = "None";
         boolean rapidDetected = false;
-
-
-        // Gets the user's average heart-rate.
-        double average = 0;
-        for(HeartRateRecord hr : records){
-
-            average+= hr.bpm;
-
-        }
-        average = average / records.size();
 
         for(HeartRateRecord hr : records) {
 
@@ -119,7 +109,7 @@ public class HeartRateListener extends WearableListenerService {
 
         HeartEventDAO hedao = db.hedao();
         ActivityDAO adao = db.adao();
-        final int faverage = Math.round(Math.round(average));
+        final int faverage = (int) average;
         final String fseverity = severity;
         final boolean frapid = rapidDetected;
 

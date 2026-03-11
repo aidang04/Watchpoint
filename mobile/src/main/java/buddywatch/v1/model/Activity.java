@@ -6,7 +6,6 @@ import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import java.sql.Date;
-import java.time.LocalDate;
 
 @Entity(
         tableName = "Activity",
