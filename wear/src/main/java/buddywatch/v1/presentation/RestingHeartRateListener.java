@@ -1,65 +1,73 @@
 package buddywatch.v1.presentation;
 
+import android.Manifest;
 import android.app.Activity;
-import android.content.res.Resources;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.SystemClock;
+import android.widget.Chronometer;
+import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.health.services.client.HealthServices;
-import androidx.health.services.client.HealthServicesClient;
-import androidx.health.services.client.MeasureCallback;
-import androidx.health.services.client.MeasureClient;
-import androidx.health.services.client.data.Availability;
-import androidx.health.services.client.data.DataPointContainer;
-import androidx.health.services.client.data.DataType;
-import androidx.health.services.client.data.DeltaDataType;
-import androidx.health.services.client.data.SampleDataPoint;
-
-import java.util.ArrayList;
 
 import buddywatch.v1.R;
 
-public class RestingHeartRateListener extends Activity {
+public class RestingHeartRateListener extends Activity implements HeartRateManager.HeartRateListener {
 
-    MeasureCallback callback;
-    MeasureClient mClient;
+    private HeartRateManager heartRateManager;
+    private Chronometer timer;
+    private TextView bpmView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_resting);
 
-        // TODO: Finish
+        timer = findViewById(R.id.timer);
+        bpmView = findViewById(R.id.bpmView);
 
-        ArrayList<HeartRateRecord> recorder = new ArrayList<>();
+        checkPerms();
 
-        HealthServicesClient hClient = HealthServices.getClient(this);
-        mClient = hClient.getMeasureClient();
-        Resources res = getResources();
+    }
 
-        callback = new MeasureCallback() {
-            @Override
-            public void onAvailabilityChanged(@NonNull DeltaDataType<?, ?> deltaDataType, @NonNull Availability availability) {
-                Log.d("tutorialHandler", "The availability has changed.");
-            }
+    public void checkPerms(){
 
-            @Override
-            public void onDataReceived(DataPointContainer dataPointContainer) {
-
-                for(SampleDataPoint<Double> dp : dataPointContainer.getData(DataType.HEART_RATE_BPM)){
-
-                    recorder.add(new HeartRateRecord(System.currentTimeMillis(), dp.getValue()));
-
-            }
+        if (checkSelfPermission(android.Manifest.permission.BODY_SENSORS)
+                == PackageManager.PERMISSION_GRANTED) {
+            heartRateManager = new HeartRateManager(this, this);
+            heartRateManager.startTracking();
+            startTimer();
         }
-    };
+        else
+        {
+            requestPermissions(new String[]{Manifest.permission.BODY_SENSORS}, 1001);
+        }
 
-        mClient.registerMeasureCallback(DataType.HEART_RATE_BPM, callback);
+    }
 
+    public void startTimer(){
 
+        timer.setBase(SystemClock.elapsedRealtime());
+        timer.start();
 
-}
+        findViewById(R.id.stop).setOnClickListener(V -> {
+            timer.stop();
+            heartRateManager.sendData("/resting_data");
+            finish();
+        });
+
+    }
+
+    @Override
+    public void onHeartRateUpdate(int bpm){
+        runOnUiThread(() -> bpmView.setText(getResources().getString(R.string.bpm, bpm)));
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        if(heartRateManager != null) heartRateManager.stopTracking();
+    }
+
 
 }

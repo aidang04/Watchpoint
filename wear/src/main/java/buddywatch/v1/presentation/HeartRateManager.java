@@ -13,6 +13,11 @@ import androidx.health.services.client.data.DataType;
 import androidx.health.services.client.data.DeltaDataType;
 import androidx.health.services.client.data.SampleDataPoint;
 
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.Wearable;
+
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class HeartRateManager {
@@ -63,6 +68,34 @@ public class HeartRateManager {
 
     public ArrayList<HeartRateRecord> getRecorder(){
         return recorder;
+    }
+
+    public void sendData(String path){
+        sendData(path, null);
+    }
+
+    public void sendData(String messagePath, String guidePath){
+
+        // if guidePath is empty, stays empty, if it isn't it's contents are converted to byte array.
+        byte[] pathPayload = (guidePath != null && !guidePath.isEmpty()) ? guidePath.getBytes(StandardCharsets.UTF_8) : new byte[0];
+
+        ByteBuffer buffer = ByteBuffer.allocate(4 + pathPayload.length + recorder.size());
+        buffer.putInt(pathPayload.length);
+        buffer.put(pathPayload);
+
+        for(HeartRateRecord r : recorder){
+            buffer.putLong(r.timestamp);
+            buffer.putDouble(r.bpm);
+        }
+
+        byte[] payload = buffer.array();
+
+        Wearable.getNodeClient(context).getConnectedNodes().addOnSuccessListener(nodes -> {
+            for(Node node : nodes){
+                Wearable.getMessageClient(context).sendMessage(node.getId(), messagePath, payload).addOnFailureListener(e -> Log.d("HeartRateManager", "Failed to send."));
+            }
+        }).addOnFailureListener(e -> Log.d("HeartRateManager", "No nodes found"));
+
     }
 
 }

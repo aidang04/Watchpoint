@@ -44,17 +44,14 @@
                 app:layout_constraintStart_toStartOf="@id/start"
                 app:layout_constraintTop_toTopOf="@+id/top">
 
-                <TextView
-                    android:id="@+id/textView"
+                <Chronometer
+                    android:id="@+id/timer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/secondsElapsed"
-                    android:textColor="@android:color/black"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="@id/underText"
-                    app:layout_constraintTop_toTopOf="@id/underBPM"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    app:layout_constraintBottom_toTopOf="@id/underText"/>
+
 
                 <TextView
                     android:id="@+id/bpmView"
@@ -68,6 +65,7 @@
                     app:layout_constraintStart_toStartOf="@id/beforeBPM" />
 
                 <Button
+                    android:id="@+id/stop"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/stopResting"

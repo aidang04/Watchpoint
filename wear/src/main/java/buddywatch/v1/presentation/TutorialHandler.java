@@ -1,20 +1,13 @@
 package buddywatch.v1.presentation;
 
-import static java.time.MonthDay.now;
-
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import com.google.android.gms.wearable.Node;
-import com.google.android.gms.wearable.Wearable;
 
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -78,7 +71,7 @@ public class TutorialHandler extends Activity implements HeartRateManager.HeartR
                     textView.setText(out);
 
                     heartRateManager.stopTracking();
-                    sendData();
+                    heartRateManager.sendData("/guide_data", getIntent().getStringExtra("TUTORIAL_PATH"));
 
                     v.postDelayed(this::finish, 1000);
 
@@ -125,12 +118,6 @@ public class TutorialHandler extends Activity implements HeartRateManager.HeartR
         }
     }
 
-    public void stopTracking(){
-
-        heartRateManager.stopTracking();
-        sendData();
-    }
-
     // Breaks down the file into displayable lines for startTut.
     public String[] readFile(String filename) throws IOException {
 
@@ -146,34 +133,6 @@ public class TutorialHandler extends Activity implements HeartRateManager.HeartR
         is.close();
 
         return sb.toString().split("\n");
-
-    }
-
-    private void sendData(){
-
-        String path = getIntent().getStringExtra("TUTORIAL_PATH");
-        byte[] pathPayload = path != null ? path.getBytes(StandardCharsets.UTF_8) : new byte[0];
-
-        // Creates a buffer with enough memory to hold all entries in the Heartrate + Timestamp recorder.
-        ByteBuffer buffer = ByteBuffer.allocate(4 + pathPayload.length + heartRateManager.getRecorder().size() * 16);
-
-        buffer.putInt(pathPayload.length);
-        buffer.put(pathPayload);
-
-        // Loops through recorder and adds each element to the buffer.
-        for(HeartRateRecord r : heartRateManager.getRecorder()){
-            buffer.putLong(r.timestamp);
-            buffer.putDouble(r.bpm);
-        }
-
-        byte[] payload = buffer.array();
-
-        Wearable.getNodeClient(this).getConnectedNodes().addOnSuccessListener(nodes -> {
-            for(Node node : nodes){
-                Log.d("", "aaa");
-                Wearable.getMessageClient(this).sendMessage(node.getId(), "/guide_data", payload).addOnFailureListener(e -> Log.d("debug", "defo"));
-            }
-        }).addOnFailureListener(e -> Log.d("Debug", "didnt send"));
 
     }
 
