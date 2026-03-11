@@ -5,28 +5,16 @@ import static java.time.MonthDay.now;
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.health.services.client.HealthServicesClient;
-import androidx.health.services.client.HealthServices;
-import androidx.health.services.client.MeasureCallback;
-import androidx.health.services.client.MeasureClient;
-import androidx.health.services.client.data.Availability;
-import androidx.health.services.client.data.DataType;
-import androidx.health.services.client.data.DataPointContainer;
-import androidx.health.services.client.data.DeltaDataType;
-import androidx.health.services.client.data.SampleDataPoint;
-
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.Wearable;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,12 +25,9 @@ import buddywatch.v1.R;
 public class TutorialHandler extends Activity implements HeartRateManager.HeartRateListener {
 
     private HeartRateManager heartRateManager;
-    MeasureCallback  callback;
-    MeasureClient mClient;
     int curLine;
     private TextView textView;
     private TextView bpmView;
-    ArrayList<HeartRateRecord> recorder = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstance){
@@ -88,10 +73,15 @@ public class TutorialHandler extends Activity implements HeartRateManager.HeartR
             findViewById(R.id.forward).setOnClickListener(v -> {
                 curLine++;
                 if (curLine >= lines.length){
+
                     String out = "The Tutorial is over.";
                     textView.setText(out);
-                    stopTracking();
+
+                    heartRateManager.stopTracking();
+                    sendData();
+
                     v.postDelayed(this::finish, 1000);
+
                     return;
                 }
                 String out = "Step " + (curLine + 1) + ". " + lines[curLine];
@@ -136,11 +126,9 @@ public class TutorialHandler extends Activity implements HeartRateManager.HeartR
     }
 
     public void stopTracking(){
-        if(mClient != null && callback != null){
-            heartRateManager.stopTracking();
-             Log.d("Debug", "got to stoptracking.");
-             sendData();
-        }
+
+        heartRateManager.stopTracking();
+        sendData();
     }
 
     // Breaks down the file into displayable lines for startTut.
@@ -167,7 +155,7 @@ public class TutorialHandler extends Activity implements HeartRateManager.HeartR
         byte[] pathPayload = path != null ? path.getBytes(StandardCharsets.UTF_8) : new byte[0];
 
         // Creates a buffer with enough memory to hold all entries in the Heartrate + Timestamp recorder.
-        ByteBuffer buffer = ByteBuffer.allocate(4 + pathPayload.length + recorder.size() * 16);
+        ByteBuffer buffer = ByteBuffer.allocate(4 + pathPayload.length + heartRateManager.getRecorder().size() * 16);
 
         buffer.putInt(pathPayload.length);
         buffer.put(pathPayload);
