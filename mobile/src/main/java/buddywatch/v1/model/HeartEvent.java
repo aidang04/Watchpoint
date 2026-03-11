@@ -39,8 +39,6 @@ public class HeartEvent {
     public boolean rapid;
     public boolean addressed;
 
-    public HeartEvent(){}
-
     public HeartEvent(String gPath, int aid, int avgBPM, String severity, boolean rapid){
 
         this.gPath = gPath;

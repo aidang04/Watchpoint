@@ -28,12 +28,10 @@ public class Activity {
 
     public Date dateCompleted;
 
-    public Activity(){}
-
-    public Activity(String guidePath, LocalDate completed){
+    public Activity(String guidePath, Date dateCompleted){
 
         this.guidePath = guidePath;
-        this.dateCompleted = Date.valueOf(String.valueOf(completed));
+        this.dateCompleted = dateCompleted;
 
     }
 

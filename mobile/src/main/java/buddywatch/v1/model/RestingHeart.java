@@ -8,6 +8,10 @@ public class RestingHeart {
 
     @PrimaryKey(autoGenerate = true)
     public int id;
-    public int avgBPM;
-    public int secondsElapsed;
+    public int BPM;
+
+    public RestingHeart(int BPM){
+        this.BPM = BPM;
+    }
+
 }

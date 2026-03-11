@@ -17,12 +17,10 @@ public class Guide {
     public Boolean markedFavourite;
     public Boolean markedDaily;
 
-    public Guide(){}
+    public Guide(String guideName, @NonNull String filepath){
 
-    public Guide(String name, @NonNull String fpath){
-
-        this.guideName = name;
-        this.filepath = fpath;
+        this.guideName = guideName;
+        this.filepath = filepath;
         this.markedFavourite = false;
         this.markedDaily = false;
 

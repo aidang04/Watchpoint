@@ -66,10 +66,6 @@ public class HeartRateManager {
         }
     }
 
-    public ArrayList<HeartRateRecord> getRecorder(){
-        return recorder;
-    }
-
     public void sendData(String path){
         sendData(path, null);
     }

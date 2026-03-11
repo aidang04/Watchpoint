@@ -12,10 +12,10 @@ import buddywatch.v1.model.RestingHeart;
 public interface RestingHeartDAO {
 
     @Insert
-    void insertResting(RestingHeart rh);
+    void insertAll(List<RestingHeart> rhs);
 
-    @Query("SELECT * FROM RestingHeart")
-    List<RestingHeart> getAllResting();
+    @Query("SELECT AVG(BPM) FROM RestingHeart")
+    float getAverageBPM();
 
     @Query("DELETE FROM RestingHeart")
     void deleteAllData();

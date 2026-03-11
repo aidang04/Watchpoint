@@ -7,6 +7,7 @@ import com.google.android.gms.wearable.WearableListenerService;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -27,8 +28,6 @@ public class HeartRateListener extends WearableListenerService {
 
         if(msgEvent.getPath().equals("/guide_data")){
 
-            Log.d("debug", "r");
-
             byte[] payload = msgEvent.getData();
             ByteBuffer buffer = ByteBuffer.wrap(payload);
 
@@ -44,12 +43,11 @@ public class HeartRateListener extends WearableListenerService {
                 double bpm = buffer.getDouble();
 
                 records.add(new HeartRateRecord(timestamp, bpm));
-                Log.d("Debug", "timestamp: " + timestamp + ". bpm: " + bpm);
             }
 
             ActivityDAO adao = db.adao();
             Thread dbInsertActivity = new Thread(() -> {
-                adao.insertActivity(new Activity(path, LocalDate.now()));
+                adao.insertActivity(new Activity(path, Date.valueOf(LocalDate.now().toString())));
                 assessHeartrate(records, db);
             });
 
