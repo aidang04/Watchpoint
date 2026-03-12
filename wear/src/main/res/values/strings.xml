@@ -11,6 +11,8 @@
     <string name ="bpm">%1$d bpm</string>
     <string name ="fileError">Error reading file.</string>
     <string name ="stopResting">Stop</string>
+    <string name ="yellowBG">Yellow Background</string>
+    <string name ="boldText">Bold Text</string>
 
     Placeholders
     <string name="loading">Now Loading…</string>

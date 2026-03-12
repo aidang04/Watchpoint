@@ -2,6 +2,7 @@ package buddywatch.v1.presentation;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -9,10 +10,11 @@ import android.widget.Chronometer;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import buddywatch.v1.R;
 
-public class RestingHeartRateListener extends Activity implements HeartRateManager.HeartRateListener {
+public class RestingHeartRateTracker extends Activity implements HeartRateManager.HeartRateListener {
 
     private HeartRateManager heartRateManager;
     private Chronometer timer;
@@ -25,6 +27,11 @@ public class RestingHeartRateListener extends Activity implements HeartRateManag
 
         timer = findViewById(R.id.timer);
         bpmView = findViewById(R.id.bpmView);
+
+        SharedPreferences prefs = getSharedPreferences("settings", MODE_PRIVATE);
+        if(prefs.getBoolean("yellow_background", false)){
+            findViewById(R.id.background).setBackground(ContextCompat.getDrawable(this, R.drawable.rect_border_yellow));
+        }
 
         checkPerms();
 

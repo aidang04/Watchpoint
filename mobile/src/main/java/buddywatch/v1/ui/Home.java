@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -38,6 +40,7 @@ public class Home extends AppCompatActivity {
     private static final int MARGIN_UP_DOWN = 5;
     private static final int MARGIN_LEFT_RIGHT = 10;
     private static final String START_RESTING = "/trigger_resting";
+    AlertDialog dialog;
 
 
     @Override
@@ -196,25 +199,36 @@ public class Home extends AppCompatActivity {
     }
 
     private void callSettings(){
+        View dialogView = getLayoutInflater().inflate(R.layout.settings_sheet, null);
 
         AlertDialog.Builder build = new AlertDialog.Builder(this);
-        build.setView(R.layout.settings_sheet);
+        build.setView(dialogView);
 
-        AlertDialog dialog = build.create();
+        Button begin = dialogView.findViewById(R.id.begin);
+        begin.setVisibility(View.VISIBLE);
+        begin.setOnClickListener(v -> startRestingSession());
+
+        Button deleteGuideData = dialogView.findViewById(R.id.deleteGuideData);
+        deleteGuideData.setOnClickListener(v -> deleteData("Guide"));
+        deleteGuideData.setVisibility(View.VISIBLE);
+
+        Button deleteResting = dialogView.findViewById(R.id.deleteResting);
+        deleteResting.setOnClickListener(v -> deleteData("Resting"));
+        deleteResting.setVisibility(View.VISIBLE);
+
+        dialog = build.create();
         dialog.show();
-
-        findViewById(R.id.start).setOnClickListener(v -> startRestingSession());
-        findViewById(R.id.deleteGuideData).setOnClickListener(v -> deleteData("Guide"));
-        findViewById(R.id.deleteResting).setOnClickListener(v -> deleteData("Resting"));
 
     }
 
     private void startRestingSession(){
 
+        Log.d("debug", "guh");
         NodeClient nodeClient = Wearable.getNodeClient(this);
         nodeClient.getConnectedNodes().addOnSuccessListener(nodes -> {
             for(Node n : nodes){
-                Wearable.getMessageClient(this).sendMessage(n.getId(), START_RESTING, null);
+                Wearable.getMessageClient(this).sendMessage(n.getId(), START_RESTING, null).addOnSuccessListener(aVoid ->
+                        Log.d("Home", "Sent Request."));
             }
         });
 
@@ -222,6 +236,7 @@ public class Home extends AppCompatActivity {
 
     private void deleteData(String toDelete){
 
+        Log.d("", "hm");
         GuideDatabase db = GuideDatabaseConnection.getInstance(this).getDb();
 
         if(toDelete.equals("Resting")){
@@ -239,6 +254,14 @@ public class Home extends AppCompatActivity {
 
         Toast.makeText(this, "All " + toDelete + " data successfully deleted.", Toast.LENGTH_SHORT).show();
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+        }
     }
 
 }

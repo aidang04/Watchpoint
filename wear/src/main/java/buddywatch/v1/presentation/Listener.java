@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 public class Listener extends WearableListenerService {
 
     private static final String MESSAGE_PATH = "/trigger_action";
+    private static final String START_RESTING = "/trigger_resting";
 
     @Override
     public void onMessageReceived(MessageEvent msgEvent){
@@ -21,6 +22,14 @@ public class Listener extends WearableListenerService {
 
             Intent intent = new Intent(this, TutorialHandler.class);
             intent.putExtra("TUTORIAL_PATH", in);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+
+            startActivity(intent);
+
+        }
+        else if(START_RESTING.equals(msgEvent.getPath())){
+
+            Intent intent = new Intent(this, RestingHeartRateTracker.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 
             startActivity(intent);

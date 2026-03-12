@@ -36,6 +36,7 @@
         android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/background"
             android:layout_width="0sp"
             android:layout_height="0sp"
             android:background="@drawable/rect_border"

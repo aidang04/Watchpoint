@@ -2,11 +2,13 @@ package buddywatch.v1.presentation;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,10 +28,16 @@ public class TutorialHandler extends Activity implements HeartRateManager.HeartR
     protected void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
 
+        SharedPreferences prefs = getSharedPreferences("settings", MODE_PRIVATE);
+
         // populates guide view
         setContentView(R.layout.activity_tutorial);
         textView = findViewById(R.id.textView);     // guide text display
         bpmView = findViewById(R.id.bpmView);       // heartrate display
+
+        if(prefs.getBoolean("yellow_background", false)){
+            findViewById(R.id.background).setBackground(ContextCompat.getDrawable(this, R.drawable.rect_border_yellow));
+        }
 
         // passed in string from mobile app, points to guide
         String tutorial = getIntent().getStringExtra("TUTORIAL_PATH");
