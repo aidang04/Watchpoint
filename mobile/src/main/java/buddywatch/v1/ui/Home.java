@@ -1,8 +1,13 @@
 package buddywatch.v1.ui;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -90,8 +95,33 @@ public class Home extends AppCompatActivity {
             Intent intent =  new Intent(this, AllGuidesActivity.class);
             startActivity(intent);
         });
-
         findViewById(R.id.settings).setOnClickListener(v -> callSettings());
+
+        Thread dbCheckUnaddressed = new Thread(() -> {
+            if(db.hedao().checkUnaddressed() > 0){
+                heartRateNotify();
+            }
+        });
+
+        dbCheckUnaddressed.start();
+
+    }
+
+    private void heartRateNotify(){
+
+        CardView heartCard = findViewById(R.id.heartRate);
+
+        GradientDrawable drawable = new GradientDrawable();
+        drawable.setCornerRadius(heartCard.getRadius());
+        drawable.setColor(Color.WHITE);
+        heartCard.setBackground(drawable);
+
+        ObjectAnimator notify = ObjectAnimator.ofArgb(drawable, "color", Color.WHITE, Color.RED);
+        notify.setDuration(1000);
+        notify.setRepeatCount(ObjectAnimator.INFINITE);
+        notify.setRepeatMode(ObjectAnimator.REVERSE);
+        runOnUiThread(notify::start);
+
     }
 
     private void fillDatabase(GuideDAO gDAO){
