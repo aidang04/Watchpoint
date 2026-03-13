@@ -21,6 +21,7 @@
     <string name="restingTest">Start Resting Heart-Rate Tracking on Watch.</string>
     <string name="restingDelete">Delete Just Resting Heart-Rate Data.</string>
     <string name="guideDelete">Delete Just Heart-Rate Data from Guide Sessions.</string>
+    <string name="refreshGuides">Refresh List of Guides.</string>
 
     concern_view Displayed Strings
     <string name="concernDuring">During the guide %s</string>

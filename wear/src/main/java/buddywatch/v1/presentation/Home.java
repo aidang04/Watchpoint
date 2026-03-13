@@ -16,8 +16,6 @@ public class Home extends ComponentActivity {
         setContentView(R.layout.activity_home);
 
         Switch yellow = findViewById(R.id.yellow);
-        Switch bold = findViewById(R.id.bold);
-
         SharedPreferences prefs = getSharedPreferences("settings", MODE_PRIVATE);
 
         yellow.setChecked(prefs.getBoolean("yellow_background", false));
