@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -278,7 +276,10 @@ public class Home extends AppCompatActivity {
         }
         else if(toDelete.equals("Guide")){
 
-            Thread dbDeleteData = new Thread(() -> db.hedao().deleteAllData());
+            Thread dbDeleteData = new Thread(() -> {
+                db.hedao().deleteAllData();
+                db.adao().deleteAllActivity();
+            });
             dbDeleteData.start();
 
         }

@@ -15,9 +15,6 @@ public interface HeartEventDAO {
     @Insert
     void insertHeartEvent(HeartEvent he);
 
-    @Query("SELECT * FROM HeartEvent ORDER BY id DESC")
-    List<HeartEvent> getAllHeartEvent();
-
     @Query("SELECT HeartEvent.*, Guide.guideName FROM HeartEvent INNER JOIN Guide ON HeartEvent.gPath = Guide.filepath")
     List<HeartEventWithGuideTitle> getAllHeartEventPlusTitle();
 
