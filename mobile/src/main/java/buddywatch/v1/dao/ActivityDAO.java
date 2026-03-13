@@ -28,10 +28,10 @@ public interface ActivityDAO {
     @Query("SELECT * FROM Activity WHERE dateCompleted = :today")
     List<Activity> getTodaysActivities(Date today);
 
-    @Query("SELECT * FROM Activity WHERE dateCompleted = (SELECT MAX(dateCompleted) FROM Activity)")
+    @Query("SELECT * FROM Activity WHERE id = (SELECT MAX(id) FROM Activity)")
     Activity getRecentActivity();
 
-    @Query("SELECT COUNT(*) FROM Activity WHERE guidePath = :gPath AND dateCompleted = date('now')")
+    @Query("SELECT COUNT(*) FROM Activity WHERE guidePath = :gPath AND date(dateCompleted / 1000, 'unixepoch') = date('now')")
     int checkIfComplete(String gPath);
 
 }

@@ -25,6 +25,8 @@ public class RestingRateListener extends WearableListenerService {
             byte[] payload = msgEvent.getData();
             ByteBuffer buffer = ByteBuffer.wrap(payload);
 
+            buffer.getInt();
+
             ArrayList<RestingHeart> records = new ArrayList<>();
             while(buffer.hasRemaining()){
                 // skip timestamp

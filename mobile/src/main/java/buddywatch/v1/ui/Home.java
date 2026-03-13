@@ -63,6 +63,14 @@ public class Home extends AppCompatActivity {
         super.onResume();
         GuideDatabase db = GuideDatabaseConnection.getInstance(getApplicationContext()).getDb();
         fillDailyTasks(db);
+
+        Thread dbCheckUnaddressed = new Thread(() -> {
+            if(db.hedao().checkUnaddressed() > 0){
+                heartRateNotify();
+            }
+        });
+
+        dbCheckUnaddressed.start();
     }
 
     private void viewHome(GuideDatabase db){
@@ -96,15 +104,6 @@ public class Home extends AppCompatActivity {
             startActivity(intent);
         });
         findViewById(R.id.settings).setOnClickListener(v -> callSettings());
-
-        Thread dbCheckUnaddressed = new Thread(() -> {
-            if(db.hedao().checkUnaddressed() > 0){
-                heartRateNotify();
-            }
-        });
-
-        dbCheckUnaddressed.start();
-
     }
 
     private void heartRateNotify(){

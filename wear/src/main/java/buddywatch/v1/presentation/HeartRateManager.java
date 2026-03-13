@@ -75,7 +75,7 @@ public class HeartRateManager {
         // if guidePath is empty, stays empty, if it isn't it's contents are converted to byte array.
         byte[] pathPayload = (guidePath != null && !guidePath.isEmpty()) ? guidePath.getBytes(StandardCharsets.UTF_8) : new byte[0];
 
-        ByteBuffer buffer = ByteBuffer.allocate(4 + pathPayload.length + recorder.size());
+        ByteBuffer buffer = ByteBuffer.allocate(4 + pathPayload.length + recorder.size()* 16);
         buffer.putInt(pathPayload.length);
         buffer.put(pathPayload);
 
