@@ -1,4 +1,4 @@
-package buddywatch.v1.presentation;
+package buddywatch.application.ui;
 
 import android.Manifest;
 import android.app.Activity;
@@ -15,7 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import buddywatch.v1.R;
+import buddywatch.application.util.HeartRateManager;
+import buddywatch.application.R;
 
 public class TutorialHandler extends Activity implements HeartRateManager.HeartRateListener {
 
