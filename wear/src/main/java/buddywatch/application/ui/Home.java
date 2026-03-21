@@ -1,4 +1,4 @@
-package buddywatch.v1.presentation;
+package buddywatch.application.ui;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -6,7 +6,7 @@ import android.widget.Switch;
 
 import androidx.activity.ComponentActivity;
 
-import buddywatch.v1.R;
+import buddywatch.application.R;
 
 public class Home extends ComponentActivity {
 
@@ -16,7 +16,6 @@ public class Home extends ComponentActivity {
         setContentView(R.layout.activity_home);
 
         Switch yellow = findViewById(R.id.yellow);
-        Switch bold = findViewById(R.id.bold);
 
         SharedPreferences prefs = getSharedPreferences("settings", MODE_PRIVATE);
 

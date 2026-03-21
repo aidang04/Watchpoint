@@ -1,4 +1,4 @@
-package buddywatch.v1.presentation;
+package buddywatch.application.ui;
 
 import android.Manifest;
 import android.app.Activity;
@@ -12,7 +12,8 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
-import buddywatch.v1.R;
+import buddywatch.application.util.HeartRateManager;
+import buddywatch.application.R;
 
 public class RestingHeartRateTracker extends Activity implements HeartRateManager.HeartRateListener {
 

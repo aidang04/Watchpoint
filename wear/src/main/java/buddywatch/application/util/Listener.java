@@ -1,4 +1,4 @@
-package buddywatch.v1.presentation;
+package buddywatch.application.util;
 
 import android.content.Intent;
 import android.util.Log;
@@ -7,6 +7,9 @@ import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.WearableListenerService;
 
 import java.nio.charset.StandardCharsets;
+
+import buddywatch.application.ui.RestingHeartRateTracker;
+import buddywatch.application.ui.TutorialHandler;
 
 public class Listener extends WearableListenerService {
 
