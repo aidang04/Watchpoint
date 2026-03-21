@@ -82,7 +82,6 @@ public class TutorialHandler extends Activity implements HeartRateManager.HeartR
                     heartRateManager.sendData("/guide_data", getIntent().getStringExtra("TUTORIAL_PATH"));
 
                     v.postDelayed(this::finish, 1000);
-
                     return;
                 }
                 String out = "Step " + (curLine + 1) + ". " + lines[curLine];

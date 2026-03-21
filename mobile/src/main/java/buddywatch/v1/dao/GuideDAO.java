@@ -3,7 +3,6 @@ package buddywatch.v1.dao;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
-import androidx.room.Update;
 
 import java.util.List;
 
@@ -11,12 +10,6 @@ import buddywatch.v1.model.Guide;
 
 @Dao
 public interface GuideDAO {
-
-    @Update
-    void updateGuide(Guide guide);
-
-    @Insert
-    void insertGuide(Guide guide);
 
     @Insert
     void insertAll(List<Guide> guides);
@@ -26,9 +19,6 @@ public interface GuideDAO {
 
     @Query("SELECT * FROM Guide ORDER BY markedFavourite DESC")
     List<Guide> getAllGuides();
-
-    @Query("SELECT * FROM Guide WHERE markedFavourite = TRUE")
-    List<Guide> getFavourites();
 
     @Query("UPDATE Guide SET markedFavourite = NOT markedFavourite WHERE filepath = :fpath")
     void toggleFav(String fpath);
@@ -41,12 +31,6 @@ public interface GuideDAO {
 
     @Query("SELECT * FROM GUIDE WHERE LOWER(guideName) LIKE LOWER('%' || :searchFor || '%')")
     List<Guide> searchAll(String searchFor);
-
-    @Query("SELECT markedFavourite FROM Guide WHERE filepath = :fpath")
-    Boolean isFavourite(String fpath);
-
-    @Query("SELECT markedDaily FROM Guide WHERE filepath = :fpath")
-    Boolean isDaily(String fpath);
 
     @Query("SELECT COUNT(*) FROM Guide")
     int countGuides();

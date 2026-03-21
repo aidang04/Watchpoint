@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -63,6 +61,14 @@ public class Home extends AppCompatActivity {
         super.onResume();
         GuideDatabase db = GuideDatabaseConnection.getInstance(getApplicationContext()).getDb();
         fillDailyTasks(db);
+
+        Thread dbCheckUnaddressed = new Thread(() -> {
+            if(db.hedao().checkUnaddressed() > 0){
+                heartRateNotify();
+            }
+        });
+
+        dbCheckUnaddressed.start();
     }
 
     private void viewHome(GuideDatabase db){
@@ -96,15 +102,6 @@ public class Home extends AppCompatActivity {
             startActivity(intent);
         });
         findViewById(R.id.settings).setOnClickListener(v -> callSettings());
-
-        Thread dbCheckUnaddressed = new Thread(() -> {
-            if(db.hedao().checkUnaddressed() > 0){
-                heartRateNotify();
-            }
-        });
-
-        dbCheckUnaddressed.start();
-
     }
 
     private void heartRateNotify(){
@@ -127,10 +124,10 @@ public class Home extends AppCompatActivity {
     private void fillDatabase(GuideDAO gDAO){
 
         List<Guide> guides = new ArrayList<>();
-        guides.add(new Guide("Test 1","tut1.txt"));
-        guides.add(new Guide("Test 2","tut2.txt"));
-        guides.add(new Guide("Test 3","tut3.txt"));
-        guides.add(new Guide("Test 4","tut4.txt"));
+        guides.add(new Guide("Create Origami Fox","fox.txt"));
+        guides.add(new Guide("Create Origami Egg","egg.txt"));
+        guides.add(new Guide("Create Origami Swan","swan.txt"));
+        guides.add(new Guide("Administering Pills","administeringPills.txt"));
 
         Thread dbPopulate = new Thread(() -> gDAO.insertAll(guides));
 
@@ -246,6 +243,10 @@ public class Home extends AppCompatActivity {
         deleteResting.setOnClickListener(v -> deleteData("Resting"));
         deleteResting.setVisibility(View.VISIBLE);
 
+        Button refreshGuideList = dialogView.findViewById(R.id.refreshGuideList);
+        refreshGuideList.setOnClickListener(v -> fillDailyTasks(GuideDatabaseConnection.getInstance(this).getDb()));
+        refreshGuideList.setVisibility(View.VISIBLE);
+
         dialog = build.create();
         dialog.show();
 
@@ -253,7 +254,6 @@ public class Home extends AppCompatActivity {
 
     private void startRestingSession(){
 
-        Log.d("debug", "guh");
         NodeClient nodeClient = Wearable.getNodeClient(this);
         nodeClient.getConnectedNodes().addOnSuccessListener(nodes -> {
             for(Node n : nodes){
@@ -266,7 +266,6 @@ public class Home extends AppCompatActivity {
 
     private void deleteData(String toDelete){
 
-        Log.d("", "hm");
         GuideDatabase db = GuideDatabaseConnection.getInstance(this).getDb();
 
         if(toDelete.equals("Resting")){
@@ -277,7 +276,10 @@ public class Home extends AppCompatActivity {
         }
         else if(toDelete.equals("Guide")){
 
-            Thread dbDeleteData = new Thread(() -> db.hedao().deleteAllData());
+            Thread dbDeleteData = new Thread(() -> {
+                db.hedao().deleteAllData();
+                db.adao().deleteAllActivity();
+            });
             dbDeleteData.start();
 
         }
