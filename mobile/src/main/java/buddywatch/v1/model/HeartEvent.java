@@ -11,17 +11,17 @@ import androidx.room.PrimaryKey;
                 @ForeignKey(
                 entity = Guide.class,
                 parentColumns = "filepath",
-                childColumns = "gPath",
+                childColumns = "guidePath",
                 onUpdate = ForeignKey.CASCADE,
                 onDelete = ForeignKey.CASCADE),
         @ForeignKey(
                 entity = Activity.class,
                 parentColumns = "id",
-                childColumns = "aid",
+                childColumns = "activityId",
                 onDelete = ForeignKey.CASCADE,
                 onUpdate = ForeignKey.CASCADE
         )},
-        indices = {@Index("gPath"), @Index("aid")}
+        indices = {@Index("guidePath"), @Index("activityId")}
 )
 public class HeartEvent {
 
@@ -29,23 +29,21 @@ public class HeartEvent {
     public int id;
 
     // guide id where the event occurred.
-    public String gPath;
+    public String guidePath;
 
     // activity id belonging to the session which caused the event
-    public int aid;
+    public int activityId;
 
     public int avgBPM;
     public String severity;
-    public boolean rapid;
     public boolean addressed;
 
-    public HeartEvent(String gPath, int aid, int avgBPM, String severity, boolean rapid){
+    public HeartEvent(String guidePath, int activityId, int avgBPM, String severity){
 
-        this.gPath = gPath;
-        this.aid = aid;
+        this.guidePath = guidePath;
+        this.activityId = activityId;
         this.avgBPM = avgBPM;
         this.severity = severity;
-        this.rapid = rapid;
         this.addressed = severity.equals("None");
 
     }

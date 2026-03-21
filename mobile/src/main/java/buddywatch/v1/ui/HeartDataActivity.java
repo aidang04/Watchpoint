@@ -190,7 +190,7 @@ public class HeartDataActivity extends AppCompatActivity {
                 intent.putExtra("name", title);
                 intent.putExtra("level", event.severity);
                 intent.putExtra("id", event.id);
-                intent.putExtra("aid", event.aid);
+                intent.putExtra("aid", event.activityId);
                 startActivity(intent);
             });
         }

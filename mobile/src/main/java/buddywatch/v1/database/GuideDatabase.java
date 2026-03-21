@@ -18,7 +18,7 @@ import buddywatch.v1.util.Converters;
 
 @Database(
         entities = {Guide.class, Activity.class, HeartEvent.class, RestingHeart.class},
-        version = 5,
+        version = 6,
         exportSchema = false
 )
 @TypeConverters({Converters.class})

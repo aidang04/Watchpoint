@@ -116,7 +116,7 @@ public class HeartRateListener extends WearableListenerService {
         Activity recent = adao.getRecentActivity();
 
         if(recent != null){
-            hedao.insertHeartEvent(new HeartEvent(recent.guidePath, recent.id, faverage, fseverity, frapid));
+            hedao.insertHeartEvent(new HeartEvent(recent.guidePath, recent.id, faverage, fseverity));
         }
 
     }
