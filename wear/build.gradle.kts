@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "buddywatch.v1"
+    namespace = "buddywatch.application"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "buddywatch.v1"
+        applicationId = "buddywatch.application"
         minSdk = 30
         targetSdk = 36
         versionCode = 1
