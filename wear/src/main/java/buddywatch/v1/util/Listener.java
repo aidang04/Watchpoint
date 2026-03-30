@@ -1,4 +1,4 @@
-package buddywatch.application.util;
+package buddywatch.v1.util;
 
 import android.content.Intent;
 import android.util.Log;
@@ -8,8 +8,8 @@ import com.google.android.gms.wearable.WearableListenerService;
 
 import java.nio.charset.StandardCharsets;
 
-import buddywatch.application.ui.RestingHeartRateTracker;
-import buddywatch.application.ui.TutorialHandler;
+import buddywatch.v1.ui.RestingHeartRateTracker;
+import buddywatch.v1.ui.TutorialHandler;
 
 public class Listener extends WearableListenerService {
 
@@ -18,6 +18,8 @@ public class Listener extends WearableListenerService {
 
     @Override
     public void onMessageReceived(MessageEvent msgEvent){
+
+        Log.d("Wear", "aa");
 
         if(MESSAGE_PATH.equals(msgEvent.getPath())){
             String in = new String(msgEvent.getData(), StandardCharsets.UTF_8);

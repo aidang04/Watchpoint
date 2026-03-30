@@ -1,10 +1,12 @@
-package buddywatch.application.ui;
+package buddywatch.v1.ui;
 
 import android.Manifest;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,13 +17,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import buddywatch.application.util.HeartRateManager;
-import buddywatch.application.R;
+import buddywatch.v1.util.HeartRateManager;
+import buddywatch.v1.R;
 
 public class TutorialHandler extends Activity implements HeartRateManager.HeartRateListener {
 
     private HeartRateManager heartRateManager;
-    int curLine;
+    private int curLine;
     private TextView textView;
     private TextView bpmView;
 
@@ -32,7 +34,7 @@ public class TutorialHandler extends Activity implements HeartRateManager.HeartR
         SharedPreferences prefs = getSharedPreferences("settings", MODE_PRIVATE);
 
         // populates guide view
-        setContentView(R.layout.activity_tutorial);
+        setContentView(R.layout.activity_guide);
         textView = findViewById(R.id.textView);     // guide text display
         bpmView = findViewById(R.id.bpmView);       // heartrate display
 
@@ -45,7 +47,7 @@ public class TutorialHandler extends Activity implements HeartRateManager.HeartR
         checkPerms(tutorial);
     }
 
-    public void checkPerms(String filename){
+    private void checkPerms(String filename){
 
         if (checkSelfPermission(android.Manifest.permission.BODY_SENSORS)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -60,7 +62,7 @@ public class TutorialHandler extends Activity implements HeartRateManager.HeartR
 
     }
 
-    public void startTut(String filename){
+    private void startTut(String filename){
 
         String[] lines;
         try{
@@ -74,7 +76,8 @@ public class TutorialHandler extends Activity implements HeartRateManager.HeartR
 
             findViewById(R.id.forward).setOnClickListener(v -> {
                 curLine++;
-                if (curLine >= lines.length){
+                Log.d("Debug", String.valueOf(curLine) + "hi");
+                if (curLine == lines.length){
 
                     String out = "The Tutorial is over.";
                     textView.setText(out);
@@ -85,6 +88,12 @@ public class TutorialHandler extends Activity implements HeartRateManager.HeartR
                     v.postDelayed(this::finish, 1000);
                     return;
                 }
+
+                if(curLine > 0 && findViewById(R.id.chevronLeft).getVisibility() != View.VISIBLE){
+                    // Sets the chevron indicating it is possible to go back to visible.
+                    findViewById(R.id.chevronLeft).setVisibility(View.VISIBLE);
+                }
+
                 String out = "Step " + (curLine + 1) + ". " + lines[curLine];
                 textView.setText(out);
             });
@@ -94,6 +103,10 @@ public class TutorialHandler extends Activity implements HeartRateManager.HeartR
                 curLine--;
                 String out = "Step " + (curLine + 1) + ". " + lines[curLine];
                 textView.setText(out);
+
+                if(curLine == 0){
+                    findViewById(R.id.chevronLeft).setVisibility(View.INVISIBLE);
+                }
                 }
             });
 
@@ -127,7 +140,7 @@ public class TutorialHandler extends Activity implements HeartRateManager.HeartR
     }
 
     // Breaks down the file into displayable lines for startTut.
-    public String[] readFile(String filename) throws IOException {
+    private String[] readFile(String filename) throws IOException {
 
         InputStream is = getAssets().open(filename);
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));

@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "buddywatch.application"
+    namespace = "buddywatch.v1"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "buddywatch.application"
+        applicationId = "buddywatch.v1"
         minSdk = 30
         targetSdk = 36
         versionCode = 1
@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.firebase.crashlytics.buildtools)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.wear)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)

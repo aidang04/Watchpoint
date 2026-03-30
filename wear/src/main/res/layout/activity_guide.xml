@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -45,24 +46,50 @@
             app:layout_constraintStart_toStartOf="@id/start"
             app:layout_constraintTop_toTopOf="@+id/top">
 
+            <ImageView
+                android:id="@+id/chevronLeft"
+                android:layout_width="0sp"
+                android:layout_height="0sp"
+                android:src="@drawable/chevronleft"
+                android:contentDescription="@string/chevronLeft"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/chevLeft"/>
+
+            <ImageView
+                android:id="@+id/chevronRight"
+                android:layout_width="0sp"
+                android:layout_height="0sp"
+                android:src="@drawable/chevronright"
+                android:contentDescription="@string/chevronRight"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintStart_toStartOf="@id/chevRight"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
             <FrameLayout
                 android:layout_width="0sp"
                 android:layout_height="0sp"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
                     android:id="@+id/textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:padding="1sp"
+                    android:layout_margin="8sp"
                     android:text="@string/loading"
                     android:textAlignment="center"
                     android:textColor="@android:color/black"
-                    android:textStyle="bold"
-                    android:layout_gravity="center"
-                    android:padding="1sp"/>
+                    android:textStyle="bold" />
             </FrameLayout>
 
             <TextView
@@ -96,6 +123,20 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.65" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/chevLeft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.12" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/chevRight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.88" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

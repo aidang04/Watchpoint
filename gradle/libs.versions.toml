@@ -24,6 +24,7 @@ wearToolingPreview = "1.0.0"
 activityCompose = "1.11.0"
 coreSplashscreen = "1.0.1"
 firebaseCrashlyticsBuildtools = "3.0.6"
+wearVersion = "1.4.0"
 
 [libraries]
 androidx-concurrent-futures = { module = "androidx.concurrent:concurrent-futures", version.ref = "concurrentFutures" }
@@ -56,6 +57,7 @@ androidx-wear-tooling-preview = { group = "androidx.wear", name = "wear-tooling-
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "coreSplashscreen" }
 firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
+wear = { group = "androidx.wear", name = "wear", version.ref = "wearVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

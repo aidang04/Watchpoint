@@ -1,4 +1,4 @@
-package buddywatch.application.ui;
+package buddywatch.v1.ui;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -6,7 +6,7 @@ import android.widget.Switch;
 
 import androidx.activity.ComponentActivity;
 
-import buddywatch.application.R;
+import buddywatch.v1.R;
 
 public class Home extends ComponentActivity {
 

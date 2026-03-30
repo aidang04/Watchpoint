@@ -44,6 +44,7 @@ public class Home extends AppCompatActivity {
     private static final int MARGIN_LEFT_RIGHT = 10;
     private static final String START_RESTING = "/trigger_resting";
     AlertDialog dialog;
+    ObjectAnimator notify;
 
 
     @Override
@@ -65,6 +66,9 @@ public class Home extends AppCompatActivity {
         Thread dbCheckUnaddressed = new Thread(() -> {
             if(db.hedao().checkUnaddressed() > 0){
                 heartRateNotify();
+            }
+            else if(notify != null){
+                heartRateClear();
             }
         });
 
@@ -113,12 +117,23 @@ public class Home extends AppCompatActivity {
         drawable.setColor(Color.WHITE);
         heartCard.setBackground(drawable);
 
-        ObjectAnimator notify = ObjectAnimator.ofArgb(drawable, "color", Color.WHITE, Color.RED);
+        notify = ObjectAnimator.ofArgb(drawable, "color", Color.WHITE, Color.RED);
         notify.setDuration(1000);
         notify.setRepeatCount(ObjectAnimator.INFINITE);
         notify.setRepeatMode(ObjectAnimator.REVERSE);
         runOnUiThread(notify::start);
 
+    }
+
+    private void heartRateClear(){
+
+        runOnUiThread(notify::end);
+        CardView heartCard = findViewById(R.id.heartRate);
+
+        GradientDrawable drawable = new GradientDrawable();
+        drawable.setCornerRadius(heartCard.getRadius());
+        drawable.setColor(Color.WHITE);
+        heartCard.setBackground(drawable);
     }
 
     private void fillDatabase(GuideDAO gDAO){
@@ -129,7 +144,10 @@ public class Home extends AppCompatActivity {
         guides.add(new Guide("Create Origami Swan","swan.txt"));
         guides.add(new Guide("Administering Pills","administeringPills.txt"));
 
-        Thread dbPopulate = new Thread(() -> gDAO.insertAll(guides));
+        Thread dbPopulate = new Thread(() -> {
+            gDAO.dropAllGuides();
+            gDAO.insertAll(guides);
+        });
 
         try{
             dbPopulate.start();
@@ -242,10 +260,6 @@ public class Home extends AppCompatActivity {
         Button deleteResting = dialogView.findViewById(R.id.deleteResting);
         deleteResting.setOnClickListener(v -> deleteData("Resting"));
         deleteResting.setVisibility(View.VISIBLE);
-
-        Button refreshGuideList = dialogView.findViewById(R.id.refreshGuideList);
-        refreshGuideList.setOnClickListener(v -> fillDailyTasks(GuideDatabaseConnection.getInstance(this).getDb()));
-        refreshGuideList.setVisibility(View.VISIBLE);
 
         dialog = build.create();
         dialog.show();

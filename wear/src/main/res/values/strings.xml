@@ -18,4 +18,9 @@
     <string name="loading">Now Loading…</string>
     <string name ="loadBPM">-- bpm</string>
     <string name ="secondsElapsed">$s s</string>
+
+    Image Content Descriptions
+    <string name ="chevronLeft">Chevron Pointing Left</string>
+    <string name ="chevronRight">Chevron Pointing Right</string>
+
 </resources>

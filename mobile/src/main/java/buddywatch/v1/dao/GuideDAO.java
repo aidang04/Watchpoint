@@ -35,4 +35,8 @@ public interface GuideDAO {
     @Query("SELECT COUNT(*) FROM Guide")
     int countGuides();
 
+    @Query("DELETE FROM Guide")
+    void dropAllGuides();
+
+
 }

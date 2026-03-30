@@ -1,4 +1,4 @@
-package buddywatch.application.ui;
+package buddywatch.v1.ui;
 
 import android.Manifest;
 import android.app.Activity;
@@ -12,8 +12,8 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
-import buddywatch.application.util.HeartRateManager;
-import buddywatch.application.R;
+import buddywatch.v1.util.HeartRateManager;
+import buddywatch.v1.R;
 
 public class RestingHeartRateTracker extends Activity implements HeartRateManager.HeartRateListener {
 
@@ -38,7 +38,7 @@ public class RestingHeartRateTracker extends Activity implements HeartRateManage
 
     }
 
-    public void checkPerms(){
+    private void checkPerms(){
 
         if (checkSelfPermission(android.Manifest.permission.BODY_SENSORS)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -53,7 +53,7 @@ public class RestingHeartRateTracker extends Activity implements HeartRateManage
 
     }
 
-    public void startTimer(){
+    private void startTimer(){
 
         timer.setBase(SystemClock.elapsedRealtime());
         timer.start();

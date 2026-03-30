@@ -1,4 +1,4 @@
-package buddywatch.application.theme
+package buddywatch.v1.theme
 
 import androidx.compose.runtime.Composable
 import androidx.wear.compose.material.MaterialTheme
