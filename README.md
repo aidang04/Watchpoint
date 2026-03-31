@@ -49,7 +49,7 @@ Press the right side of the watch-face to advance the guide a step and the left 
 During the guide, the watch automatically tracks your heart-rate information.
 You can now complete the guide at your own pace.
 
-### Startng & Completing a Resting Heart-Rate Tracking Session 
+### Starting & Completing a Resting Heart-Rate Tracking Session 
 
 By selecting the settings icon on the home page, a pop-up menu will appear with three options.
 - Start Resting Heart-Rate Tracking on Watch
@@ -67,6 +67,18 @@ If you want to delete just your resting heart-rate data or just heart-rate data 
 ### How to tell when heart-Rate data has been marked as concerning
 
 If the application has marked heart-rate data it analysed as concerning, the application with notify you by making the 'View Health Info' button pulsate a bright red colour.
-This will not go away until the concern is addressed, but does not impact functionality of the application, so if the user is busy they can still complete guides normally.
-Once the user is in on the heart-rate information tab, the concerning guide session will be highlighted red. These can be clicked on.
-Once clicked on, the user will be led to a page which displays
+This will not go away until the concern is addressed, but does not impact functionality of the application, so if you are busy you can still complete guides normally.
+Once you are on the heart-rate information tab, the concerning guide session will be highlighted red. These can be clicked on.
+Once clicked on, you will be led to a page which displays information about the severity of the heart-rate event, which guide was being completed when it happened and what day it happened on.
+Included in this page are links to useful resources that point you to support.
+
+Once this page is closed, the notification on the home page will clear.
+
+### Filling the Daily Box
+
+To fill the daily box with guides you want to complete daily, navigate to the guides you want and select the top right document icon.
+These guides will now appear in the daily box, alongside a checkmark to signify if they've been completed today or not. This checkmark auto logs on completion of guides.
+
+### Making the Guide's Background Yellow
+
+Upon opening the smartwatch application, select the 'Yellow Background' slider to activate yellow backgrounds during the guides. This is especially useful for users with dyslexia.
