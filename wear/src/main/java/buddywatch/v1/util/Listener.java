@@ -19,8 +19,6 @@ public class Listener extends WearableListenerService {
     @Override
     public void onMessageReceived(MessageEvent msgEvent){
 
-        Log.d("Wear", "aa");
-
         if(MESSAGE_PATH.equals(msgEvent.getPath())){
             String in = new String(msgEvent.getData(), StandardCharsets.UTF_8);
             Log.d("Wear", "Tut received! " + in);

@@ -46,6 +46,7 @@ public class HeartDataActivity extends AppCompatActivity {
     private boolean awaiting = false;
 
 
+    // sets up UI.
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -59,6 +60,7 @@ public class HeartDataActivity extends AppCompatActivity {
 
     }
 
+    // updates heartEvents every time the screen is opened.
     @Override
     protected void onResume() {
         super.onResume();
@@ -66,6 +68,7 @@ public class HeartDataActivity extends AppCompatActivity {
         fillHeartEvents(db);
     }
 
+    // handles confirmation and deletion of heart rate info
     private void handleDelete(GuideDatabase db){
 
         awaiting = true;
@@ -103,6 +106,7 @@ public class HeartDataActivity extends AppCompatActivity {
 
     }
 
+    // fills heart event list
     private void fillHeartEvents(GuideDatabase db){
 
         List<HeartEventWithGuideTitle> heartEvents = fetchHeartEvents(db);
@@ -116,6 +120,7 @@ public class HeartDataActivity extends AppCompatActivity {
         }
     }
 
+    // returns a list of heart events alongside what guide they're associated with
     private List<HeartEventWithGuideTitle> fetchHeartEvents(GuideDatabase db){
 
         HeartEventDAO hedao = db.hedao();
@@ -134,6 +139,7 @@ public class HeartDataActivity extends AppCompatActivity {
 
     }
 
+    // creates a box to display heart info
     private void createHeartBox(LinearLayout addTo, String title, HeartEvent event){
 
         Context context = HeartDataActivity.this;

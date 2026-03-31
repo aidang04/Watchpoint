@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -76,7 +75,6 @@ public class TutorialHandler extends Activity implements HeartRateManager.HeartR
 
             findViewById(R.id.forward).setOnClickListener(v -> {
                 curLine++;
-                Log.d("Debug", String.valueOf(curLine) + "hi");
                 if (curLine == lines.length){
 
                     String out = "The Tutorial is over.";

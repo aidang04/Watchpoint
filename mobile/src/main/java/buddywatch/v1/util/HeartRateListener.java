@@ -1,7 +1,5 @@
 package buddywatch.v1.util;
 
-import android.util.Log;
-
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.WearableListenerService;
 
@@ -22,8 +20,6 @@ public class HeartRateListener extends WearableListenerService {
 
     @Override
     public void onMessageReceived(MessageEvent msgEvent){
-
-        Log.d("Debug", "Received");
 
         GuideDatabase db = GuideDatabaseConnection.getInstance(getApplicationContext()).getDb();
 
@@ -69,14 +65,12 @@ public class HeartRateListener extends WearableListenerService {
         final double MILD_STRESS = 1.1;         // 10 % increase
         final double MODERATE_STRESS = 1.2;     // 20 % increase
         final double SEVERE_STRESS = 1.3;       // 30 % increase
-        final double RAPID_INCREASE = 0.15;     // 15 % rapid increase
 
         // Tracks last 2 heart-rate entries for rapid increase checking.
         HeartRateRecord minus1 = null;
         HeartRateRecord minus2 = null;
 
         String severity = "None";
-        boolean rapidDetected = false;
 
         for(HeartRateRecord hr : records) {
 
@@ -96,10 +90,6 @@ public class HeartRateListener extends WearableListenerService {
                 minus2 = minus1;
                 minus1 = hr;
             } else {
-                if (hr.timestamp - minus2.timestamp < 8 && (hr.bpm - minus2.bpm) > minus2.bpm * RAPID_INCREASE) {
-                    rapidDetected = true;
-                }
-
                 minus2 = minus1;
                 minus1 = hr;
 
@@ -111,7 +101,6 @@ public class HeartRateListener extends WearableListenerService {
         ActivityDAO adao = db.adao();
         final int faverage = (int) average;
         final String fseverity = severity;
-        final boolean frapid = rapidDetected;
 
         Activity recent = adao.getRecentActivity();
 

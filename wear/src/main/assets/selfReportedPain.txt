@@ -1,0 +1,8 @@
+Ask patient to score pain out of 10.
+Ask where pain is.
+Ask what it feels like, sharp, dull, burning, pressure?
+Ask if anything makes it better/worse.
+Ask how long they've had it.
+Ask if it's getting worse.
+Document score, location & description.
+Reporting anything new or worsening.

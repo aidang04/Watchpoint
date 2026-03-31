@@ -47,6 +47,7 @@ public class Home extends AppCompatActivity {
     ObjectAnimator notify;
 
 
+    // sets up UI
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +58,7 @@ public class Home extends AppCompatActivity {
         viewHome(db);
     }
 
+    // customises UI to reflect new information every time Home is opened
     @Override
     protected void onResume() {
         super.onResume();
@@ -75,6 +77,7 @@ public class Home extends AppCompatActivity {
         dbCheckUnaddressed.start();
     }
 
+    // does the customising for the UI
     private void viewHome(GuideDatabase db){
 
         // Creates a data access object to interact with Guide table.
@@ -86,13 +89,8 @@ public class Home extends AppCompatActivity {
             }
         });
 
-        try{
-            // Checks if database is empty, if so, fills with guides.
-            dbCheckDatabase.start();
-            dbCheckDatabase.join();
-        } catch (InterruptedException e) {
-            ErrorHandler.handle(e, getApplicationContext(), "Database Error. \n Please contact the maintainer at aidan.gowdy.2022@uni.strath.ac.uk.");
-        }
+        // Checks if database is empty, if so, fills with guides.
+        dbCheckDatabase.start();
 
         CardView heartCard = findViewById(R.id.heartRate);
         heartCard.setOnClickListener(v -> {
@@ -108,6 +106,7 @@ public class Home extends AppCompatActivity {
         findViewById(R.id.settings).setOnClickListener(v -> callSettings());
     }
 
+    // starts playing a notification on the heart-rate info card to alert user of unaddressed concern
     private void heartRateNotify(){
 
         CardView heartCard = findViewById(R.id.heartRate);
@@ -125,6 +124,7 @@ public class Home extends AppCompatActivity {
 
     }
 
+    // clears notification
     private void heartRateClear(){
 
         runOnUiThread(notify::end);
@@ -136,28 +136,35 @@ public class Home extends AppCompatActivity {
         heartCard.setBackground(drawable);
     }
 
+    // fills database with current list of guides
     private void fillDatabase(GuideDAO gDAO){
 
         List<Guide> guides = new ArrayList<>();
-        guides.add(new Guide("Create Origami Fox","fox.txt"));
-        guides.add(new Guide("Create Origami Egg","egg.txt"));
-        guides.add(new Guide("Create Origami Swan","swan.txt"));
         guides.add(new Guide("Administering Pills","administeringPills.txt"));
+        guides.add(new Guide("Check for Chest Infection", "chestInfectionCheck.txt"));
+        guides.add(new Guide("Check for Dehydration", "dehydrationCheck.txt"));
+        guides.add(new Guide("Checking Feet for Diabetic Complications", "feetDiabetic.txt"));
+        guides.add(new Guide("Non-Verbal Pain Assessment (PAINAD)", "PAINADScale.txt"));
+        guides.add(new Guide("Self-Reported Pain Assessment", "selfReportedPain.txt"));
+        guides.add(new Guide("Immediate Post-Fall Assessment", "postFall.txt"));
+        guides.add(new Guide("Post-Fall Pupil & Responsiveness Check", "fallResponsiveness.txt"));
+        guides.add(new Guide("Checking for Pressure Ulcers", "pressureSore.txt"));
+        guides.add(new Guide("Using a Pulse Oximeter", "pulseOximeter.txt"));
+        guides.add(new Guide("Observing Respiratory Rate", "respiratoryRate.txt"));
+        guides.add(new Guide("Checking for Red Flags of Sepsis", "sepsisCheck.txt"));
+        guides.add(new Guide("Daily Check for Soft Signs of Deterioration", "softSignsCheck.txt"));
+        guides.add(new Guide("Taking a Manual Pulse", "takePulse.txt"));
+        guides.add(new Guide("Checklist for UTI", "UTIChecklist.txt"));
 
         Thread dbPopulate = new Thread(() -> {
             gDAO.dropAllGuides();
             gDAO.insertAll(guides);
         });
 
-        try{
-            dbPopulate.start();
-            dbPopulate.join();
-        }
-        catch (InterruptedException e){
-            ErrorHandler.handle(e, getApplicationContext(), "Database Error. \n Please contact the maintainer at aidan.gowdy.2022@uni.strath.ac.uk.");
-        }
+        dbPopulate.start();
     }
 
+    // fills daily task box
     private void fillDailyTasks(GuideDatabase db) {
 
         new Thread(() -> {
@@ -169,6 +176,7 @@ public class Home extends AppCompatActivity {
 
     }
 
+    // updates daily guide box
     private void updateUI(GuideDatabase db, List<Guide> guides){
 
         LinearLayout guideContainer = findViewById(R.id.guides);
@@ -193,6 +201,7 @@ public class Home extends AppCompatActivity {
 
     }
 
+    // returns a CardView to be displayed in the daily guide box
     private CardView createDailyBox(String filepath, String title, int completed){
 
         Context context = Home.this;
@@ -243,6 +252,7 @@ public class Home extends AppCompatActivity {
 
     }
 
+    // handles setting up UI for settings pop-up
     private void callSettings(){
         View dialogView = getLayoutInflater().inflate(R.layout.settings_sheet, null);
 
@@ -266,6 +276,7 @@ public class Home extends AppCompatActivity {
 
     }
 
+    // sends request to smartwatch to begin a resting heart-rate tracking session
     private void startRestingSession(){
 
         NodeClient nodeClient = Wearable.getNodeClient(this);
@@ -278,6 +289,7 @@ public class Home extends AppCompatActivity {
 
     }
 
+    // deletes resting or guide heart-rate data individually.
     private void deleteData(String toDelete){
 
         GuideDatabase db = GuideDatabaseConnection.getInstance(this).getDb();
@@ -302,6 +314,7 @@ public class Home extends AppCompatActivity {
 
     }
 
+    // dismisses settings pop-up on stop
     @Override
     protected void onStop() {
         super.onStop();

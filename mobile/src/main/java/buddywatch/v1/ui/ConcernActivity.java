@@ -19,6 +19,7 @@ import buddywatch.v1.util.GuideDatabaseConnection;
 
 public class ConcernActivity extends AppCompatActivity {
 
+    // responsible for setting up UI
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +82,7 @@ public class ConcernActivity extends AppCompatActivity {
 
     }
 
+    // customises on screen text
     public void customiseUI(String name, String level, Date date){
 
         // Formats java.sql.Date class into a String to display of the format dd/mm/yyyy
@@ -99,6 +101,7 @@ public class ConcernActivity extends AppCompatActivity {
 
     }
 
+    // method to set URL listeners for each link
     private void setURLListener(int view, String url){
 
         findViewById(view).setOnClickListener(v -> {

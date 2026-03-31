@@ -36,38 +36,41 @@ public class AllGuidesActivity extends AppCompatActivity {
     private static final int CARD_RADIUS = 12;
     private static final int TEXT_SIZE = 15;
 
+    // sets up the view, setting onClickListeners and filling the all guides box.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // sets content to appropriate layout.
         setContentView(R.layout.search_view);
+
+        // prepares data access object to query the database.
         GuideDatabase db = GuideDatabaseConnection.getInstance(getApplicationContext()).getDb();
-
         GuideDAO gdao = db.gdao();
-        AtomicReference<List<Guide>> atomicGuideList = new AtomicReference<>(new ArrayList<>());
 
-        Thread dbGetAllGuides = new Thread(() -> atomicGuideList.set(gdao.getAllGuides()));
+        // runs query to fill list of guides
+        Thread dbGetAllGuides = new Thread(() -> displayGuides(gdao.getAllGuides()));
+        dbGetAllGuides.start();
 
-        try{
-            dbGetAllGuides.start();
-            dbGetAllGuides.join();
-        } catch (InterruptedException e) {
-            ErrorHandler.handle(e, getApplicationContext(), "Database Error. \nPlease contact the maintainer at aidan.gowdy.2022@uni.strath.ac.uk.");
-        }
-
-        displayGuides(atomicGuideList.get());
 
         EditText searchBox = findViewById(R.id.search);
 
+        // sets onClickListener to reset search
         findViewById(R.id.reset).setOnClickListener(v -> {
-            displayGuides(atomicGuideList.get());
+            Thread dbGetGuides = new Thread(() -> {
+                List<Guide> guides = gdao.getAllGuides();
+                runOnUiThread(() -> displayGuides(guides));
+            });
+            dbGetGuides.start();
             searchBox.setText(getText(R.string.empty));
         });
+        // sets onClickListeners for going Home and searching guide list.
         findViewById(R.id.home).setOnClickListener(v -> finish());
         findViewById(R.id.send).setOnClickListener(v -> displayGuides(searchGuides(gdao, searchBox.getText().toString())));
 
     }
 
+    // fills the all guides box. Also responsible for filling it with results of searches.
     private void displayGuides(List<Guide> guides){
 
         LinearLayout display = findViewById(R.id.guideFrame);
@@ -98,6 +101,7 @@ public class AllGuidesActivity extends AppCompatActivity {
 
     }
 
+    // responsible for creating and stylising guide boxes to be displayed in the list.
     private CardView createGuideBox(Guide guide){
 
         Context context = AllGuidesActivity.this;
@@ -136,6 +140,7 @@ public class AllGuidesActivity extends AppCompatActivity {
 
     }
 
+    // searches list of all guides and returns a List of results.
     private List<Guide> searchGuides(GuideDAO gdao, String searchFor){
 
         AtomicReference<List<Guide>> atomicResults = new AtomicReference<>(new ArrayList<>());

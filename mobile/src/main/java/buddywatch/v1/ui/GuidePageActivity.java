@@ -26,6 +26,7 @@ public class GuidePageActivity extends AppCompatActivity {
 
     private static final String MESSAGE_PATH = "/trigger_action";
 
+    // responsible for setting up UI
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,6 +87,7 @@ public class GuidePageActivity extends AppCompatActivity {
 
     }
 
+    // responsible for toggling if individual guide is favourite or not. also updates icon.
     private void toggleFav(ImageView toUpdate){
 
         if(toUpdate.getTag().equals("true")){
@@ -100,6 +102,7 @@ public class GuidePageActivity extends AppCompatActivity {
 
     }
 
+    // responsible for toggling if individual guide is daily or not. also updates icon.
     private void toggleDaily(ImageView toUpdate) {
 
         if(toUpdate.getTag().equals("true")){
@@ -112,15 +115,16 @@ public class GuidePageActivity extends AppCompatActivity {
         }
     }
 
-    private void sendCommand(String tut) {
+    // sends request to smartwatch application to start a guide
+    private void sendCommand(String guide) {
 
         NodeClient nodeClient = Wearable.getNodeClient(this);
         nodeClient.getConnectedNodes().addOnSuccessListener(nodes -> {
             for (Node n : nodes) {
-                byte[] toSend = tut.getBytes(StandardCharsets.UTF_8);
+                byte[] toSend = guide.getBytes(StandardCharsets.UTF_8);
                 Wearable.getMessageClient(this).sendMessage(n.getId(), MESSAGE_PATH, toSend).addOnSuccessListener(aVoid ->
-                        Log.d("PhoneApp", "Sent message: " + tut)).addOnFailureListener(e ->
-                        Log.e("PhoneApp", "Failed to send: " + tut));
+                        Log.d("GuidePageActivity", "Sent message: " + guide)).addOnFailureListener(e ->
+                        Log.e("GuidePageActivity", "Failed to send: " + guide));
             }
         });
     }
