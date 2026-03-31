@@ -1,6 +1,13 @@
 # Watchpoint Guide
 
+## What is Watchpoint?
+
 Watchpoint is a set of two paired applications. A smartphone application for Android devices and a smartwatch application for WearOS devices.
+Watchpoint is aimed at informal carers, who often put so much work into caring for their loved ones, they neglect to take care of themselves.
+
+The project addresses this problem by supporting carers in taking care of their loved ones, through topical, step-based guides, while also monitoring the heart-rate data of the user.
+This allows informal carers to integrate the application into their daily routine and have something to let them know when they might be pushing themselves a bit too hard.
+Also included in the project is the ability to mark guides as daily. This will push shortcuts to them to the home page of the application and have them track if they have been completed today or not, allowing carers to check what still needs done today at a glance.
 
 ## Pre-Requisites 
 
