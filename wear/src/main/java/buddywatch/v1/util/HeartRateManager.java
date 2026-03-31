@@ -22,6 +22,7 @@ import java.util.ArrayList;
 
 public class HeartRateManager {
 
+    // interface that defines what happens to the UI when a heart-rate update is received.
     public interface HeartRateListener{
         void onHeartRateUpdate(int bpm);
     }
@@ -37,6 +38,7 @@ public class HeartRateManager {
         this.listener = listener;
     }
 
+    // starts tracking heart-rate
     public void startTracking(){
         mClient = HealthServices.getClient(context).getMeasureClient();
 
@@ -60,16 +62,19 @@ public class HeartRateManager {
         mClient.registerMeasureCallback(DeltaDataType.HEART_RATE_BPM, callback);
     }
 
+    // stops tracking and unregisters the measure callback
     public void stopTracking(){
         if(mClient != null && callback != null){
             mClient.unregisterMeasureCallbackAsync(DataType.HEART_RATE_BPM, callback);
         }
     }
 
+    // overload method for sendData
     public void sendData(String path){
         sendData(path, null);
     }
 
+    // packages heart-rate info and sends it, if provided a guidePath it will send that too. tags message with messagePath for destination
     public void sendData(String messagePath, String guidePath){
 
         // if guidePath is empty, stays empty, if it isn't it's contents are converted to byte array.

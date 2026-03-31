@@ -21,7 +21,7 @@ public class Listener extends WearableListenerService {
 
         if(MESSAGE_PATH.equals(msgEvent.getPath())){
             String in = new String(msgEvent.getData(), StandardCharsets.UTF_8);
-            Log.d("Wear", "Tut received! " + in);
+            Log.d("Wear", "Guide received: " + in);
 
             Intent intent = new Intent(this, TutorialHandler.class);
             intent.putExtra("TUTORIAL_PATH", in);

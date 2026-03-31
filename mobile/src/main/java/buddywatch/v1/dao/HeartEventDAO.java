@@ -15,7 +15,7 @@ public interface HeartEventDAO {
     @Insert
     void insertHeartEvent(HeartEvent he);
 
-    @Query("SELECT HeartEvent.*, Guide.guideName FROM HeartEvent INNER JOIN Guide ON HeartEvent.guidePath = Guide.filepath")
+    @Query("SELECT HeartEvent.*, Guide.guideName FROM HeartEvent INNER JOIN Guide ON HeartEvent.guidePath = Guide.filepath ORDER BY HeartEvent.id DESC")
     List<HeartEventWithGuideTitle> getAllHeartEventPlusTitle();
 
     @Query("UPDATE HeartEvent SET addressed = TRUE WHERE id = :id")
